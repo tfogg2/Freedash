@@ -23,6 +23,7 @@ function Register(props) {
       console.log("User was successfully created")
     } catch (e) {
       appDispatch({ type: "flashMessage", value: e.data })
+      console.log(e.data)
       console.log("There was a problem")
     }
   }

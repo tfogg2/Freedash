@@ -6,7 +6,6 @@ import HeaderLoggedOut from "./HeaderLoggedOut"
 const useStyles = createUseStyles(theme => ({
   home: {
     display: theme.layout.default.display,
-    padding: theme.layout.default.padding,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
     flexDirection: "column",
@@ -33,7 +32,23 @@ const useStyles = createUseStyles(theme => ({
   homeScreen: {
     display: theme.layout.default.display,
     flex: 1,
-    marginBottom: theme.layout.default.marginBottom
+    alignItems: theme.layout.default.alignItems,
+    justifyContent: theme.layout.default.justifyContent,
+    color: "white",
+    width: "100%"
+  },
+  screenOne: {
+    background: "#FF4D66"
+  },
+  screenTwo: {
+    background: "#FFF966"
+  },
+  screenThree: {
+    background: "#33BFFF"
+  },
+  screenFour: {
+    background: "#2F2F2F",
+    flex: 2
   }
 }))
 
@@ -49,6 +64,7 @@ function HomeGuest() {
       <div className={clsx(classes.homeScreen, classes.screenOne)}>One</div>
       <div className={clsx(classes.homeScreen, classes.screenTwo)}>Two</div>
       <div className={clsx(classes.homeScreen, classes.screenThree)}>Three</div>
+      <div className={clsx(classes.homeScreen, classes.screenFour)}>Four</div>
     </div>
   )
 }

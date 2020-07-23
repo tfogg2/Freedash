@@ -1,16 +1,31 @@
 import React, { useEffect, useState, useContext } from "react"
 import Axios from "axios"
+import {createUseStyles} from 'react-jss'
 import DispatchContext from "../DispatchContext"
+import clsx from 'clsx'
+
+const useStyles = createUseStyles( () => ({
+  defaultForm: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center", 
+    textAlign: "center"
+
+  }
+}))
+
+
 
 function Login(props) {
   const appDispatch = useContext(DispatchContext)
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const classes = useStyles()
 
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post("http://localhost:5000/login", { username, password })
+      const response = await Axios.post("http://localhost:5000/users/login", { username, password })
       if (response.data) {
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "You have successfully logged in!" })
@@ -24,16 +39,16 @@ function Login(props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mb-0 pt-2 pt-md-0">
-      <div className="row align-items-center">
-        <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
-          <input onChange={e => setUsername(e.target.value)} name="username" className="form-control form-control-sm input-dark" type="text" placeholder="Username" autoComplete="off" />
+    <form onSubmit={handleSubmit} className={classes.defaultForm}>
+      <div className={classes.defaultFormHolder}>
+        <div className={classes.formControlHolder}>
+          <input onChange={e => setUsername(e.target.value)} name="username" className={classes.formControl} type="text" placeholder="Username" autoComplete="off" />
         </div>
-        <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
-          <input onChange={e => setPassword(e.target.value)} name="password" className="form-control form-control-sm input-dark" type="password" placeholder="Password" />
+        <div className={classes.formControlHolder}>
+          <input onChange={e => setPassword(e.target.value)} name="password" className={classes.formControl} type="password" placeholder="Password" />
         </div>
-        <div className="col-md-auto">
-          <button className="btn btn-success btn-sm">Sign In</button>
+        <div className={classes.formControlHolder}>
+          <button className={clsx(classes.btn, classes.btnSuccess)}>Sign In</button>
         </div>
       </div>
     </form>

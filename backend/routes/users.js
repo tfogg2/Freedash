@@ -10,6 +10,14 @@ router.route("/").get((req, res) => {
     .catch(err => res.status(400).json("Error: " + err))
 })
 
+router.get("/:id", auth, async (req, res) => {
+  const user = await User.findById(req.user)
+  res.json({
+    displayName: user.displayName,
+    id: user._id
+  })
+})
+
 router.post("/register", async (req, res) => {
   try {
     const { email, password, passwordCheck, displayName } = req.body

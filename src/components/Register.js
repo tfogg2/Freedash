@@ -4,6 +4,16 @@ import Axios from "axios"
 import { useImmerReducer } from "use-immer"
 import DispatchContext from "../DispatchContext"
 import { CSSTransition } from "react-transition-group"
+import {createUseStyles} from 'react-jss'
+
+const useStyles = createUseStyles(theme => ({
+  defaultForm: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center"
+  },
+}))
 
 function Register(props) {
   const initialState = {
@@ -34,6 +44,8 @@ function Register(props) {
   }
 
   const appDispatch = useContext(DispatchContext)
+
+  const classes = useStyles()
 
   function ourReducer(draft, action) {
     switch (action.type) {
@@ -222,7 +234,7 @@ function Register(props) {
     <div>
       <div>
         <div>
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={handleFormSubmit} className={classes.defaultForm}>
             <div>
               <label htmlFor="username-register">
                 <small>Username</small>

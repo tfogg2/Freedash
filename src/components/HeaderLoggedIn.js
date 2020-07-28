@@ -9,6 +9,7 @@ const useStyles = createUseStyles(theme => ({
   header: {
     display: theme.layout.default.display,
     padding: theme.layout.default.padding,
+    flexDirection: theme.layout.default.flexDirection,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent
   },

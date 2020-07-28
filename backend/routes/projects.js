@@ -7,16 +7,18 @@ router.route("/").get((req, res) => {
     .catch(err => res.status(400).json("Error: " + err))
 })
 
-router.route("/add").post((req, res) => {
-  const username = req.body.username
+router.route("/create").post((req, res) => {
+  const owner = req.body.owner
+  const title = req.body.title
   const description = req.body.description
-  const duration = Number(req.body.duration)
+  const steps = req.body.steps
   const date = Date.parse(req.body.date)
 
   const newProject = new Project({
-    username,
+    owner,
+    title,
     description,
-    duration,
+    steps,
     date
   })
 

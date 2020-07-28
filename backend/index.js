@@ -28,3 +28,5 @@ mongoose.connect(
 //set up routes
 
 app.use("/users", require("./routes/users"))
+
+app.use("/projects", require("./routes/projects"))

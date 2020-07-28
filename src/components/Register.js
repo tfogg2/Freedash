@@ -4,15 +4,52 @@ import Axios from "axios"
 import { useImmerReducer } from "use-immer"
 import DispatchContext from "../DispatchContext"
 import { CSSTransition } from "react-transition-group"
-import {createUseStyles} from 'react-jss'
+import { createUseStyles } from "react-jss"
 
 const useStyles = createUseStyles(theme => ({
+  defaultFormPage: {
+    display: "flex",
+    flexDirection: "row"
+  },
   defaultForm: {
     display: "flex",
+    flex: 4,
     alignItems: "center",
     justifyContent: "center",
-    textAlign: "center"
+    flexDirection: "row"
   },
+  defaultSideBar: {
+    display: "flex",
+    flex: 1
+  },
+  defaultFormHolder: {
+    display: "flex",
+    flex: 1,
+    flexDirection: "column",
+    "& button[type='submit']": {
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 2,
+      borderRadius: 5,
+      boxSizing: "border-box",
+      border: "1px solid #f1f1f1"
+    }
+  },
+  formControlHolder: {
+    margin: "10px 0",
+    display: "flex",
+    flex: 1,
+    "& input": {
+      height: "40px",
+      display: "flex",
+      textAlign: "center",
+      flex: 1,
+      borderRadius: 5,
+      border: "1px solid #f1f1f1"
+    }
+  }
 }))
 
 function Register(props) {
@@ -233,46 +270,41 @@ function Register(props) {
   return (
     <div>
       <div>
-        <div>
+        <div className={classes.defaultFormPage}>
+          <div className={classes.defaultSideBar}></div>
           <form onSubmit={handleFormSubmit} className={classes.defaultForm}>
-            <div>
-              <label htmlFor="username-register">
-                <small>Username</small>
-              </label>
-              {/* <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
-              <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
-              </CSSTransition> */}
+            <div className={classes.defaultFormHolder}>
+              {/* <div>
+                <label htmlFor="username-register">
+                  <small>Username</small>
+                </label>
+                 <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
+                <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
+                </CSSTransition> 
+              </div> */}
+              <div className={classes.formControlHolder}>
+                <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" type="text" placeholder="you@example.com" autoComplete="off" />
+                <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
+                </CSSTransition>
+              </div>
+              <div className={classes.formControlHolder}>
+                <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" type="password" placeholder="Create a password" />
+                <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
+                </CSSTransition>
+              </div>
+              <div className={classes.formControlHolder}>
+                <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" type="password" placeholder="Confirm password" />
+                <CSSTransition in={state.passwordCheck.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                  <div className="alert alert-danger small liveValidateMessage">{state.passwordCheck.message}</div>
+                </CSSTransition>
+              </div>
+              <button type="submit">Register for Freedash</button>
             </div>
-            <div className="form-group">
-              <label htmlFor="email-register" className="text-muted mb-1">
-                <small>Email</small>
-              </label>
-              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" className="form-control" type="text" placeholder="you@example.com" autoComplete="off" />
-              <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
-              </CSSTransition>
-            </div>
-            <div className="form-group">
-              <label htmlFor="password-register" className="text-muted mb-1">
-                <small>Password</small>
-              </label>
-              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
-              <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
-              </CSSTransition>
-            </div>
-            <div className="form-group">
-              <label htmlFor="password-register" className="text-muted mb-1">
-                <small>Confirm Password</small>
-              </label>
-              <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" className="form-control" type="password" placeholder="Confirm password" />
-              <CSSTransition in={state.passwordCheck.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className="alert alert-danger small liveValidateMessage">{state.passwordCheck.message}</div>
-              </CSSTransition>
-            </div>
-            <button type="submit">Register for Freedash</button>
           </form>
+          <div className={classes.defaultSideBar}></div>
         </div>
       </div>
     </div>

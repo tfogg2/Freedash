@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import { createUseStyles } from "react-jss"
+import {Link} from 'react-router-dom'
 import clsx from "clsx"
 import HeaderLoggedOut from "./HeaderLoggedOut"
 
@@ -25,9 +26,25 @@ const useStyles = createUseStyles(theme => ({
     "& p": {
       display: theme.layout.default.display
     },
-    "& button": {
-      display: theme.layout.default.display
+    "& a": {
+      textDecoration: "none",
+      "& button": {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#6767ff",
+        textDecoration: "none",
+        color: "#fff",
+        fontSize: 18,
+        cursor: "pointer",
+        height: 60,
+        padding: "0 20px",
+        borderRadius: 5,
+        boxSizing: "border-box",
+        border: "1px solid #f1f1f1"
+      }
     }
+   
   },
   homeScreen: {
     display: theme.layout.default.display,
@@ -59,7 +76,7 @@ function HomeGuest() {
       <div className={classes.homeText}>
         <h2 className={classes.homeMsg}>Welcome to Freedash!</h2>
         <p>Create unlimited projects and track them as you progress.</p>
-        <button>Create Account</button>
+        <Link to="/register"><button>Create Account</button></Link>
       </div>
       <div className={clsx(classes.homeScreen, classes.screenOne)}>One</div>
       <div className={clsx(classes.homeScreen, classes.screenTwo)}>Two</div>

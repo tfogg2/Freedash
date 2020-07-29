@@ -104,7 +104,7 @@ function Login(props) {
         <div className={classes.defaultFormHolder}>
           <div className={classes.defaultFormTitle}>
             <h2>
-              Register for <span>FreeDash</span>
+              Login to <span>FreeDash</span>
             </h2>
           </div>
           <div className={classes.defaultFormHolder}>

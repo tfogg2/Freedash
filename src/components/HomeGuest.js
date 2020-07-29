@@ -14,7 +14,7 @@ const useStyles = createUseStyles(theme => ({
   },
   homeText: {
     display: theme.layout.default.display,
-    flex: 1,
+    flex: 2,
     flexDirection: "column",
     marginBottom: theme.layout.default.marginBottom,
     alignItems: theme.layout.default.alignItems,
@@ -34,6 +34,7 @@ const useStyles = createUseStyles(theme => ({
         justifyContent: "center",
         background: "#6767ff",
         textDecoration: "none",
+        fontWeight: "900",
         color: "#fff",
         fontSize: 18,
         cursor: "pointer",

@@ -10,7 +10,7 @@ const useStyles = createUseStyles(theme => ({
   defaultFormPage: {
     display: "flex",
     background: "#6767ff",
-    padding: "100px 0",
+    padding: "100px 0", 
     flexDirection: "row"
   },
   defaultForm: {
@@ -18,7 +18,7 @@ const useStyles = createUseStyles(theme => ({
     flex: 4,
     background: "#f9f9f9",
     borderRadius: 10,
-    padding: 40,
+    padding: 50,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row"
@@ -26,15 +26,18 @@ const useStyles = createUseStyles(theme => ({
   defaultFormTitle: {
     textAlign: "center",
     "& h2": {
-      fontSize: 36,
-      color: "#6767ff",
+      fontSize: 28,
+      color: "#1d1d1d",
       marginTop: 0, 
-
-    }
+      "& span": {
+        color: "#6767ff"
+      }
+    },
+   
   },
   defaultSideBar: {
     display: "flex",
-    flex: 3
+    flex: 2
   },
   defaultFormHolder: {
     display: "flex",
@@ -50,7 +53,7 @@ const useStyles = createUseStyles(theme => ({
       display: "flex",
       textAlign: "center",
       background: "#fff",
-      fontSize: 18,
+      fontSize: 14,
       flex: 1,
       borderRadius: 5,
       border: "1px solid #f1f1f1"
@@ -294,7 +297,7 @@ function Register(props) {
         <div className={classes.defaultFormHolder}>
           <div className={classes.defaultFormTitle}>
             <h2>
-              Register for FreeDash
+              Register for <span>FreeDash</span>
             </h2>
           </div>
           {/* <div>

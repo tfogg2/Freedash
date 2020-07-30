@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const ProjectSchema = new mongoose.Schema({
-  owner: { type: Object, required: true },
+  userId: { type: String, required: true },
   title: { type: String },
   description: { type: String },
   steps: { type: Object }

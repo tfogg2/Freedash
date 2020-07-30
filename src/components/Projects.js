@@ -7,9 +7,13 @@ const useStyles = createUseStyles(theme => ({
   }
 }))
 
-function Dashboard() {
+function Projects() {
   const classes = useStyles()
-  return <></>
+  return (
+    <div>
+      <div></div>
+    </div>
+  )
 }
 
-export default Dashboard
+export default Projects

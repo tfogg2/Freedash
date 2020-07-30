@@ -17,13 +17,13 @@ import StateContext from "./StateContext"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
 
-function App() {
+function App(props) {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("freedashToken")),
     flashMessages: [],
     user: {
-      token: localStorage.getItem("auth-token"),
-      displayName: localStorage.getItem("freedashUsername")
+      token: localStorage.getItem("freedashToken"),
+      displayName: localStorage.getItem("freedashDisplayName")
     }
   }
   function ourReducer(draft, action) {
@@ -49,6 +49,41 @@ function App() {
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      localStorage.setItem("freedashToken", state.user.token)
+      localStorage.setItem("freedashEmail", state.user.email)
+      localStorage.setItem("freedashDisplayName", state.user.displayName)
+    } else {
+      localStorage.removeItem("freedashToken")
+      localStorage.removeItem("freedashEmail")
+      localStorage.removeItem("freedashDisplayName")
+    }
+  }, [state.loggedIn])
+
+  //check if token has expired on first render
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/checkToken", { token: state.user.token }, { cancelToken: ourRequest.token })
+          if (!response.data) {
+            dispatch({ type: "logout" })
+            props.history.push("")
+            dispatch({ type: "flashMessage", value: "Your session has expired. Please login again." })
+          }
+        } catch (e) {
+          console.log("There was a problem or the request was canceled")
+        }
+      }
+      fetchResults()
+
+      return () => ourRequest.cancel()
+    }
+  }, [])
 
   useEffect(() => {
     const checkLoggedIn = async () => {

@@ -3,6 +3,7 @@ const User = require("../models/User")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const auth = require("../middleware/auth")
+const userController = require("../controllers/userController")
 
 router.route("/").get((req, res) => {
   User.find()
@@ -21,8 +22,6 @@ router.get("/:id", auth, async (req, res) => {
 router.post("/register", async (req, res) => {
   try {
     const { email, password, passwordCheck, displayName } = req.body
-
-    console.log(email, password, passwordCheck, displayName)
 
     //validation
 
@@ -55,6 +54,65 @@ router.post("/register", async (req, res) => {
   }
 })
 
+router.post("/doesEmailExist", userController.doesEmailExist)
+
+// router.post("/doesEmailExist", async (req, res) => {
+//   User.find()
+//     .then(users => {
+//       console.log(users)
+//       let user = users.findOne({ email: req.body.email })
+//       if (user) {
+//         res.json(true)
+//       } else {
+//         res.json(false)
+//       }
+//       // return new Promise(async function (resolve, reject) {
+//       //   let user = await users.findOne({ email: req.body.email })
+//       //   if (user) {
+//       //     resolve(true)
+//       //     res.json(true)
+//       //   } else {
+//       //     resolve(false)
+//       //     res.json(false)
+//       //   }
+//       // })
+//       // let emailBool = await User.doesEmailExist(req.body.email)
+//       // res.json(emailBool)
+//     })
+//     .catch(console.log("There was an error."))
+// })
+
+// router.post("/doesEmailExist", async (req, res) => {
+//   User.find()
+//     .then(async users => {
+//       const { email } = req.body.email
+//       let emailBool = await User.doesEmailExist(users, { email })
+//       console.log(emailBool)
+//       console.log(email)
+//       res.json(emailBool)
+
+//       User.doesEmailExist(users, email)
+
+//       console.log(email)
+//       return new Promise(async function (resolve, reject) {
+//         if (typeof email != "string") {
+//           resolve(false)
+//           return
+//         }
+
+//         let user = await users.findOne({ email: email })
+//         if (user) {
+//           resolve(true)
+//         } else {
+//           resolve(false)
+//         }
+//       })
+//     })
+//     .catch(err => res.status(400).json("Error: " + err))
+// })
+
+const tokenLasts = "30d"
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body
@@ -67,18 +125,25 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." })
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
     res.json({
-      token,
+      token: jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: tokenLasts }),
       user: {
         id: user._id,
         displaName: user.displayName,
         email: user.email
       }
     })
-    console.log(token)
   } catch (e) {
     console.log("There was an error: " + e)
+  }
+})
+
+router.post("/checkToken", auth, async (req, res) => {
+  try {
+    req.apiUser = jwt.verify(req.body.token, process.env.JWT_SECRET)
+    res.json(true)
+  } catch (e) {
+    res.json(false)
   }
 })
 

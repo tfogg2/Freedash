@@ -5,12 +5,13 @@ import { useImmerReducer } from "use-immer"
 import DispatchContext from "../DispatchContext"
 import { CSSTransition } from "react-transition-group"
 import { createUseStyles } from "react-jss"
+import StateContext from "../StateContext"
 
 const useStyles = createUseStyles(theme => ({
   defaultFormPage: {
     display: "flex",
     background: "#6767ff",
-    padding: "100px 0", 
+    padding: "100px 0",
     flexDirection: "row"
   },
   defaultForm: {
@@ -28,12 +29,11 @@ const useStyles = createUseStyles(theme => ({
     "& h2": {
       fontSize: 28,
       color: "#1d1d1d",
-      marginTop: 0, 
+      marginTop: 0,
       "& span": {
         color: "#6767ff"
       }
-    },
-   
+    }
   },
   defaultSideBar: {
     display: "flex",
@@ -247,6 +247,7 @@ function Register(props) {
       async function fetchResults() {
         try {
           const response = await Axios.post("http://localhost:5000/users/doesEmailExist", { email: state.email.value }, { cancelToken: ourRequest.token })
+          console.log(response)
           dispatch({ type: "emailUniqueResults", value: response.data })
         } catch (e) {
           console.log("There was a problem or the request was canceled")
@@ -290,7 +291,6 @@ function Register(props) {
     dispatch({ type: "submitForm" })
   }
   return (
-
     <div className={classes.defaultFormPage}>
       <div className={classes.defaultSideBar}></div>
       <form onSubmit={handleFormSubmit} className={classes.defaultForm}>

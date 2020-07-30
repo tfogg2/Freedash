@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import { createUseStyles } from "react-jss"
+import {Link} from 'react-router-dom'
 import clsx from "clsx"
 
 const useStyles = createUseStyles(theme => ({
@@ -25,20 +26,34 @@ const useStyles = createUseStyles(theme => ({
     "& p": {
       display: theme.layout.default.display
     },
-    "& button": {
-      display: theme.layout.default.display
+    "& a": {
+      textDecoration: "none"
+    },
+    "& button[type='submit']": {
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "#6767ff",
+      color: "#fff",
+      fontSize: 18,
+      flex: 2,
+      borderRadius: 5,
+      boxSizing: "border-box",
+      border: "1px solid #f1f1f1"
     }
   }
 }))
 
-function Home() {
+function Home(props) {
   const classes = useStyles()
   return (
     <div className={clsx(classes.homeDashboard, classes.home)}>
       <div className={classes.homeText}>
         <h2 className={classes.homeMsg}>Welcome to your Free Dashboard!</h2>
         <p>Create unlimited projects and track them as you progress.</p>
-        <button>Create Project</button>
+        <Link to="/projects/create"><button type="submit">Create Project</button></Link>
+        
       </div>
     </div>
   )

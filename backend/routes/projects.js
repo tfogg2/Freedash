@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const auth = require("../middleware/auth")
+const User = require("../models/User.js")
 let Project = require("../models/Project.js")
 
 router.get("/", auth, async (req, res) => {
@@ -9,16 +10,16 @@ router.get("/", auth, async (req, res) => {
 
 router.post("/create", auth, async (req, res) => {
   try {
+    const user = await User.findById({ _id: req.user })
+    const userId = user.id
     const { title, description, steps } = req.body
 
-    const date = Date.parse(req.body.date)
 
     const newProject = new Project({
       title,
       description,
       steps,
-      date,
-      userId: req.user
+      userId
     })
     const savedProject = await newProject.save()
     res.json(savedProject)
@@ -26,7 +27,7 @@ router.post("/create", auth, async (req, res) => {
     res.status(500).json({ error: e.message })
   }
 
-  newProject.save().then(() => res.json("Project added!").catch(err => res.status(400).json("Error: " + err)))
+  // newProject.save().then(() => res.json("Project added!").catch(err => res.status(400).json("Error: " + err)))
 })
 
 router.route("/:id").get((req, res) => {

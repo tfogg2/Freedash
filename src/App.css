@@ -5,6 +5,10 @@
   display: flex;
   flex-direction: column;
 }
+button[type='submit'] {
+  cursor: pointer;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

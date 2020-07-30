@@ -10,6 +10,7 @@ import Home from "./components/Home"
 import HomeGuest from "./components/HomeGuest"
 import Login from "./components/Login"
 import Projects from "./components/Projects"
+import CreateProject from "./components/CreateProject"
 import Register from "./components/Register"
 import Footer from "./components/Footer"
 import DispatchContext from "./DispatchContext"
@@ -23,8 +24,11 @@ function App(props) {
     flashMessages: [],
     user: {
       token: localStorage.getItem("freedashToken"),
+      id: localStorage.getItem("freedashId"),
       displayName: localStorage.getItem("freedashDisplayName")
-    }
+    },
+    tokenCheck: 0,
+    projects: []
   }
   function ourReducer(draft, action) {
     switch (action.type) {
@@ -42,6 +46,14 @@ function App(props) {
         draft.user = action.data
         return
 
+      case "createProject": 
+        draft.projects += action.data
+        return
+
+      case "checkToken":
+        draft.tokenCheck++
+        return
+      
       case "flashMessage":
         draft.flashMessages.push(action.value)
         return
@@ -53,23 +65,31 @@ function App(props) {
   useEffect(() => {
     if (state.loggedIn) {
       localStorage.setItem("freedashToken", state.user.token)
+      localStorage.setItem("freedashId", state.user.id)
       localStorage.setItem("freedashEmail", state.user.email)
       localStorage.setItem("freedashDisplayName", state.user.displayName)
     } else {
       localStorage.removeItem("freedashToken")
+      localStorage.removeItem("freedashId")
       localStorage.removeItem("freedashEmail")
       localStorage.removeItem("freedashDisplayName")
     }
   }, [state.loggedIn])
 
+
+
   //check if token has expired on first render
+
+  useEffect(() => {})
 
   useEffect(() => {
     if (state.loggedIn) {
       const ourRequest = Axios.CancelToken.source()
       async function fetchResults() {
         try {
-          const response = await Axios.post("/checkToken", { token: state.user.token }, { cancelToken: ourRequest.token })
+          const token = state.user.token
+          console.log(token)
+          const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { "freedashToken": token } })
           if (!response.data) {
             dispatch({ type: "logout" })
             props.history.push("")
@@ -86,16 +106,43 @@ function App(props) {
   }, [])
 
   useEffect(() => {
+    if (state.loggedIn) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const token = state.user.token
+          console.log(token)
+          const responseToken = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { "freedashToken": token } })
+          if (responseToken.data) {
+            const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { "freedashToken": token } })
+            if (!response.data) {
+              dispatch({ type: "logout" })
+              props.history.push("")
+              dispatch({ type: "flashMessage", value: "Your session has expired. Please login again." })
+            }
+          }
+         
+        } catch (e) {
+          console.log("There was a problem or the request was canceled")
+        }
+      }
+      fetchResults()
+
+      return () => ourRequest.cancel()
+    }
+  }, [state.tokenCheck])
+
+  useEffect(() => {
     const checkLoggedIn = async () => {
-      let token = localStorage.getItem("auth-token")
+      let token = localStorage.getItem("freedashToken")
       if (token === null) {
-        localStorage.setItem("auth-token", "")
+        localStorage.setItem("freedashToken", "")
         token = ""
       }
-      const response = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { "x-auth-token": token } })
+      const response = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { "freedashToken": token } })
 
       if (response.data) {
-        const userRes = await Axios.get("http://localhost:5000/users/:id", { headers: { "x-auth-token": token } })
+        const userRes = await Axios.get("http://localhost:5000/users/:id", { headers: { "freedashToken": token } })
         dispatch({
           token,
           user: userRes.data
@@ -126,6 +173,7 @@ function App(props) {
               {state.loggedIn ? <Route path="/" component={Home} exact /> : <Route path="/" component={HomeGuest} exact />}
               <Route path="/login" component={Login} exact />
               <Route path="/projects" component={Projects} exact />
+              <Route path="/projects/create" component={CreateProject} exact />
               <Route path="/register" component={Register} exact />
             </Switch>
             <Footer />

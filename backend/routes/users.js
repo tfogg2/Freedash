@@ -23,6 +23,8 @@ router.post("/register", async (req, res) => {
   try {
     const { email, password, passwordCheck, displayName } = req.body
 
+    console.log(email, password, passwordCheck, displayName)
+
     //validation
 
     if (!email || !password || !passwordCheck) return res.status(400).json({ body: req.body })
@@ -48,7 +50,12 @@ router.post("/register", async (req, res) => {
     console.log(newUser)
 
     const savedUser = await newUser.save()
-    res.json(savedUser)
+    if (savedUser) {
+      res.json(savedUser)
+    } else {
+      res.status(500).json("There was an error.")
+    }
+    
   } catch (err) {
     res.status(500).json("msg: " + "where can I see this " + err)
   }
@@ -138,10 +145,11 @@ router.post("/login", async (req, res) => {
   }
 })
 
-router.post("/checkToken", auth, async (req, res) => {
+router.post("/checkToken", async (req, res) => {
   try {
-    req.apiUser = jwt.verify(req.body.token, process.env.JWT_SECRET)
+    req.user = jwt.verify(req.body.token, process.env.JWT_SECRET)
     res.json(true)
+    console.log(true)
   } catch (e) {
     res.json(false)
   }
@@ -157,7 +165,7 @@ router.delete("/delete", auth, async (req, res) => {
 
 router.post("/tokenIsValid", async (req, res) => {
   try {
-    const token = req.header("x-auth-token")
+    const token = req.header("freedashToken")
     if (!token) return res.json(false)
 
     const verified = jwt.verify(token, process.env.JWT_SECRET)

@@ -60,7 +60,7 @@ function HeaderLoggedIn(props) {
       <div className={classes.mainNav}>
         <ul>
           <li>
-            <NavLink to="/projects">Dashboard</NavLink>
+            <NavLink to="/">Dashboard</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/logout" onClick={handleLogout}>
               Logout

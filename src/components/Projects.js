@@ -30,24 +30,30 @@ function Projects() {
   const loggedInUser = appState.user
 
   useEffect(() => {
-    async function fetchProjects() {
-      try {
-        const token = loggedInUser.token
-        console.log(token)
-        console.log(loggedInUser)
-        const user = loggedInUser.id
-        console.log(user)
-        const response = await Axios.get("http://localhost:5000/projects/", { userId: user }, { headers: { freedashToken: token } })
-        if (response.data) {
-          console.log(response.data)
-        } else {
-          console.log("No data")
+    const ourRequest = Axios.CancelToken.source()
+    if (appState.user) {
+      async function fetchProjects() {
+        try {
+          const token = loggedInUser.token
+          console.log(token)
+          console.log(loggedInUser)
+          const userId = loggedInUser.id
+          console.log(userId)
+          const response = await Axios.get("http://localhost:5000/projects/", { userId: userId }, { headers: { freedashToken: token } })
+
+          if (response.data) {
+            console.log(response.data)
+          } else {
+            console.log("No data")
+          }
+        } catch (e) {
+          console.log("Something failed." + e)
         }
-      } catch {
-        console.log("Something failed.")
       }
+      fetchProjects()
     }
-    fetchProjects()
+
+    return () => ourRequest.cancel()
   }, [])
 
   const classes = useStyles()

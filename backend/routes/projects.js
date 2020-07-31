@@ -3,9 +3,16 @@ const auth = require("../middleware/auth")
 const User = require("../models/User.js")
 let Project = require("../models/Project.js")
 
-router.get("/", async (req, res) => {
-  const projects = await Project.find({ userId: req.userId })
-  res.json(projects)
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.user })
+    const userId = user.id
+    console.log(userId)
+    const projects = await Project.find({ userId })
+    res.json(projects)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
 router.post("/create", auth, async (req, res) => {

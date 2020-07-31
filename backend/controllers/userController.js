@@ -42,3 +42,19 @@ exports.ifUserExists = function (req, res, next) {
       res.json(false)
     })
 }
+
+exports.apiLogin = function (req, res) {
+  let user = new User(req.body)
+  user
+    .login()
+    .then(function (result) {
+      res.json({
+        token: jwt.sign({ _id: user.data._id, username: user.data.username, avatar: user.avatar }, process.env.JWTSECRET, { expiresIn: tokenLasts }),
+        username: user.data.username,
+        avatar: user.avatar
+      })
+    })
+    .catch(function (e) {
+      res.json(false)
+    })
+}

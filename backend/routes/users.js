@@ -15,6 +15,7 @@ router.get("/:id", auth, async (req, res) => {
   const user = await User.findById(req.user)
   res.json({
     displayName: user.displayName,
+    email: user.email,
     id: user._id
   })
 })
@@ -55,7 +56,6 @@ router.post("/register", async (req, res) => {
     } else {
       res.status(500).json("There was an error.")
     }
-    
   } catch (err) {
     res.status(500).json("msg: " + "where can I see this " + err)
   }
@@ -149,7 +149,6 @@ router.post("/checkToken", async (req, res) => {
   try {
     req.user = jwt.verify(req.body.token, process.env.JWT_SECRET)
     res.json(true)
-    console.log(true)
   } catch (e) {
     res.json(false)
   }

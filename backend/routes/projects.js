@@ -3,8 +3,8 @@ const auth = require("../middleware/auth")
 const User = require("../models/User.js")
 let Project = require("../models/Project.js")
 
-router.get("/", auth, async (req, res) => {
-  const projects = await Project.find({ userId: req.user })
+router.get("/", async (req, res) => {
+  const projects = await Project.find({ userId: req.userId })
   res.json(projects)
 })
 
@@ -13,7 +13,6 @@ router.post("/create", auth, async (req, res) => {
     const user = await User.findById({ _id: req.user })
     const userId = user.id
     const { title, description, steps } = req.body
-
 
     const newProject = new Project({
       title,

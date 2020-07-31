@@ -26,12 +26,11 @@ const useStyles = createUseStyles(theme => ({
     "& h2": {
       fontSize: 28,
       color: "#1d1d1d",
-      marginTop: 0, 
+      marginTop: 0,
       "& span": {
         color: "#6767ff"
       }
-    },
-   
+    }
   },
   defaultSideBar: {
     display: "flex",
@@ -86,8 +85,10 @@ function Login(props) {
         console.log(response.data)
         appDispatch({ type: "login", data: response.data })
         appDispatch({ type: "flashMessage", value: "You have successfully logged in!" })
+
+        props.history.push("/")
         const id = response.data.user.id
-        props.history.push(`users/${id}`)
+        appDispatch({ type: "setId", data: id })
       } else {
         console.log("Incorrect username or password.")
         appDispatch({ type: "flashMessage", value: "Invalid Username/Password" })

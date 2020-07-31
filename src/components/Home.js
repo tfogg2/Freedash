@@ -1,7 +1,8 @@
 import React, { useEffect } from "react"
 import { createUseStyles } from "react-jss"
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom"
 import clsx from "clsx"
+import Projects from "./Projects"
 
 const useStyles = createUseStyles(theme => ({
   home: {
@@ -52,8 +53,10 @@ function Home(props) {
       <div className={classes.homeText}>
         <h2 className={classes.homeMsg}>Welcome to your Free Dashboard!</h2>
         <p>Create unlimited projects and track them as you progress.</p>
-        <Link to="/projects/create"><button type="submit">Create Project</button></Link>
-        
+        <Link to="/projects/create">
+          <button type="submit">Create Project</button>
+        </Link>
+        <Projects />
       </div>
     </div>
   )

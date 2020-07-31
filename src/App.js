@@ -46,6 +46,10 @@ function App(props) {
         draft.user = action.data
         return
 
+      case "setId":
+        draft.user.id = action.data
+        return
+
       case "createProject":
         draft.projects.push(action.data)
         return
@@ -76,6 +80,14 @@ function App(props) {
     }
   }, [state.loggedIn])
 
+  useEffect(() => {
+    if (state.loggedIn) {
+      localStorage.setItem("freedashId", state.user.id)
+    } else {
+      localStorage.removeItem("freedashId")
+    }
+  }, [state.user.id])
+
   //check if token has expired on first render
 
   useEffect(() => {})
@@ -86,7 +98,6 @@ function App(props) {
       async function fetchResults() {
         try {
           const token = state.user.token
-          console.log(token)
           const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
           if (!response.data) {
             dispatch({ type: "logout" })
@@ -109,7 +120,6 @@ function App(props) {
       async function fetchResults() {
         try {
           const token = state.user.token
-          console.log(token)
           const responseToken = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { freedashToken: token } })
           if (responseToken.data) {
             const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
@@ -141,24 +151,14 @@ function App(props) {
       if (response.data) {
         const userRes = await Axios.get("http://localhost:5000/users/:id", { headers: { freedashToken: token } })
         dispatch({
-          token,
-          user: userRes.data
+          type: "setId",
+          data: userRes.data.id
         })
       }
     }
 
     checkLoggedIn()
   }, [])
-
-  useEffect(() => {
-    if (state.loggedIn) {
-      localStorage.setItem("freedashToken", state.user.token)
-      localStorage.setItem("freedashUsername", state.user.displayName)
-    } else {
-      localStorage.removeItem("freedashToken")
-      localStorage.removeItem("freedashUsername")
-    }
-  }, [state.loggedIn])
 
   return (
     <ThemeProvider theme={theme}>

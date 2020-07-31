@@ -46,14 +46,14 @@ function App(props) {
         draft.user = action.data
         return
 
-      case "createProject": 
-        draft.projects += action.data
+      case "createProject":
+        draft.projects.push(action.data)
         return
 
       case "checkToken":
         draft.tokenCheck++
         return
-      
+
       case "flashMessage":
         draft.flashMessages.push(action.value)
         return
@@ -76,8 +76,6 @@ function App(props) {
     }
   }, [state.loggedIn])
 
-
-
   //check if token has expired on first render
 
   useEffect(() => {})
@@ -89,7 +87,7 @@ function App(props) {
         try {
           const token = state.user.token
           console.log(token)
-          const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { "freedashToken": token } })
+          const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
           if (!response.data) {
             dispatch({ type: "logout" })
             props.history.push("")
@@ -112,16 +110,15 @@ function App(props) {
         try {
           const token = state.user.token
           console.log(token)
-          const responseToken = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { "freedashToken": token } })
+          const responseToken = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { freedashToken: token } })
           if (responseToken.data) {
-            const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { "freedashToken": token } })
+            const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
             if (!response.data) {
               dispatch({ type: "logout" })
               props.history.push("")
               dispatch({ type: "flashMessage", value: "Your session has expired. Please login again." })
             }
           }
-         
         } catch (e) {
           console.log("There was a problem or the request was canceled")
         }
@@ -139,10 +136,10 @@ function App(props) {
         localStorage.setItem("freedashToken", "")
         token = ""
       }
-      const response = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { "freedashToken": token } })
+      const response = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { freedashToken: token } })
 
       if (response.data) {
-        const userRes = await Axios.get("http://localhost:5000/users/:id", { headers: { "freedashToken": token } })
+        const userRes = await Axios.get("http://localhost:5000/users/:id", { headers: { freedashToken: token } })
         dispatch({
           token,
           user: userRes.data

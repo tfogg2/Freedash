@@ -1,5 +1,6 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { createUseStyles } from "react-jss"
+import StateContext from "../StateContext"
 
 const useStyles = createUseStyles(theme => ({
   exampleStyle: {
@@ -8,12 +9,12 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 function Projects() {
+  const appState = useContext(StateContext)
+
+  useEffect(() => {}, [appState.projects])
+
   const classes = useStyles()
-  return (
-    <div>
-      <div></div>
-    </div>
-  )
+  return <div>{}</div>
 }
 
 export default Projects

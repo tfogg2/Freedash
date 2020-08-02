@@ -30,7 +30,7 @@ function Projects() {
   const loggedInUser = appState.user
 
   useEffect(() => {
-    const ourRequest = Axios.CancelToken.source()
+
     if (appState.user) {
       async function fetchProjects() {
         try {
@@ -39,7 +39,7 @@ function Projects() {
           console.log(loggedInUser)
           const userId = loggedInUser.id
           console.log(userId)
-          const response = await Axios.get("http://localhost:5000/projects/", { userId: userId }, { headers: { freedashToken: token } })
+          const response = await Axios.get("http://localhost:5000/projects/", { headers: { "freedashToken": token } })
 
           if (response.data) {
             console.log(response.data)
@@ -53,7 +53,7 @@ function Projects() {
       fetchProjects()
     }
 
-    return () => ourRequest.cancel()
+
   }, [])
 
   const classes = useStyles()

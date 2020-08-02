@@ -2,43 +2,38 @@ import React, { useEffect, useContext } from "react"
 import { createUseStyles } from "react-jss"
 import StateContext from "../StateContext"
 import { useImmerReducer } from "use-immer"
+import DispatchContext from '../DispatchContext'
 import Axios from "axios"
 
 const useStyles = createUseStyles(theme => ({
-  exampleStyle: {
-    height: theme.x
+  projectList: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    listStyleType: "none",
+    alignItems: "left",
+    justifyContent: "left"
+  },
+  project: {
+    paddingTop: 20,
+    display: "flex",
+    flex: 1
   }
 }))
 
 function Projects() {
   const appState = useContext(StateContext)
-
-  const initialState = {
-    projects: []
-  }
-
-  const [state, dispatch] = useImmerReducer(ourReducer, initialState)
-
-  function ourReducer(draft, action) {
-    switch (action.type) {
-      case "fetchProjects":
-        draft.projects.push(action.data)
-        return
-    }
-  }
-
+  const appDispatch = useContext(DispatchContext)
   const loggedInUser = appState.user
 
   useEffect(() => {
-
-    if (appState.user) {
+    if (loggedInUser) {
       async function fetchProjects() {
         try {
           const token = loggedInUser.token
-          const userId = loggedInUser.id
           const response = await Axios.get("http://localhost:5000/projects/", { headers: { "freedashToken": token } })
-
           if (response.data) {
+            appDispatch({ type: "fetchProjects", data: response.data })
             console.log(response.data)
           } else {
             console.log("No data")
@@ -49,12 +44,22 @@ function Projects() {
       }
       fetchProjects()
     }
-
-
   }, [])
 
   const classes = useStyles()
-  return <div>{}</div>
+  return (
+    <ul className={classes.projectList}>
+      {appState.projects.map(project => {
+        return (
+          <div className={classes.project}>
+            <li>
+              {project.title}
+            </li>
+          </div>
+        )
+      })}
+    </ul>
+  )
 }
 
 export default Projects

@@ -32,11 +32,11 @@ function App(props) {
   }
   function ourReducer(draft, action) {
     switch (action.type) {
-      case "login": {
+      case "login":
         draft.loggedIn = true
         draft.user = action.data
         return
-      }
+
       case "logout":
         draft.loggedIn = false
         return
@@ -60,6 +60,10 @@ function App(props) {
 
       case "flashMessage":
         draft.flashMessages.push(action.value)
+        return
+
+      case "fetchProjects":
+        draft.projects = action.data
         return
     }
   }
@@ -90,7 +94,7 @@ function App(props) {
 
   //check if token has expired on first render
 
-  useEffect(() => {})
+  useEffect(() => { })
 
   useEffect(() => {
     if (state.loggedIn) {

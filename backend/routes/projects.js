@@ -8,10 +8,7 @@ router.get("/", auth, async (req, res) => {
     const user = await User.findById(req.user)
     const userId = user.id
     const token = req.header("freedashToken")
-    console.log(token)
-    console.log(userId)
     const projects = await Project.find({ userId })
-    console.log(projects)
     res.json(projects)
   } catch (e) {
     res.status(500).json({ error: e.message })

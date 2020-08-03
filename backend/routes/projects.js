@@ -38,12 +38,15 @@ router.post("/create", auth, async (req, res) => {
 
 router.route("/:id").get((req, res) => {
   Project.findById(req.params.id)
-    .then(project => res.json(project))
+    .then(project => {
+      res.json(project)
+      console.log(project)
+    })
     .catch(err => res.status(400).json("Error: " + err))
 })
 
 router.delete("/:id", auth, async (req, res) => {
-  const project = await Project.findOne({ userId: req.user, _id: req.params.id })
+  const project = await Project.findOne({ _id: req.params.id })
   if (!project)
     return res.status(400).json({
       msg: "No todo found with this ID that belongs to the currently logged in user."

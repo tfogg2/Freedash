@@ -11,6 +11,7 @@ import HomeGuest from "./components/HomeGuest"
 import Login from "./components/Login"
 import Projects from "./components/Projects"
 import CreateProject from "./components/CreateProject"
+import ProjectView from "./components/ProjectView"
 import Register from "./components/Register"
 import Footer from "./components/Footer"
 import DispatchContext from "./DispatchContext"
@@ -174,7 +175,9 @@ function App(props) {
               {state.loggedIn ? <Route path="/" component={Home} exact /> : <Route path="/" component={HomeGuest} exact />}
               <Route path="/login" component={Login} exact />
               <Route path="/projects" component={Projects} exact />
+              
               <Route path="/projects/create" component={CreateProject} exact />
+              <Route path="/projects/:id" component={ProjectView} exact />
               <Route path="/register" component={Register} exact />
             </Switch>
             <Footer />

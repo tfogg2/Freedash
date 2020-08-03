@@ -4,6 +4,7 @@ import StateContext from "../StateContext"
 import { useImmerReducer } from "use-immer"
 import DispatchContext from '../DispatchContext'
 import Axios from "axios"
+import Project from './Project'
 
 const useStyles = createUseStyles(theme => ({
   projectList: {
@@ -11,13 +12,8 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: "column",
     flex: 1,
     listStyleType: "none",
-    alignItems: "left",
-    justifyContent: "left"
-  },
-  project: {
-    paddingTop: 20,
-    display: "flex",
-    flex: 1
+    width: "80%",
+    padding: "0 40px"
   }
 }))
 
@@ -52,12 +48,8 @@ function Projects() {
   return (
     <ul className={classes.projectList}>
       {appState.projects.map(project => {
-        return (
-          <div className={classes.project} >
-            <li>
-              {project.title}
-            </li>
-          </div>
+        return (   
+          <Project project={project} />
         )
       })}
     </ul>

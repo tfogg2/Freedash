@@ -16,6 +16,7 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     flex: 2,
     flexDirection: "column",
+    width: "100%",
     marginBottom: theme.layout.default.marginBottom,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,

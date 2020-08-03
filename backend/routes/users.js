@@ -51,8 +51,12 @@ router.post("/register", async (req, res) => {
     console.log(newUser)
 
     const savedUser = await newUser.save()
+
     if (savedUser) {
-      res.json(savedUser)
+      res.json({
+        token: jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, { expiresIn: tokenLasts }),
+        savedUser
+      })
     } else {
       res.status(500).json("There was an error.")
     }

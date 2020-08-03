@@ -28,12 +28,12 @@ const useStyles = createUseStyles(theme => ({
     "& h2": {
       fontSize: 28,
       color: "#1d1d1d",
-      marginTop: 0, 
+      marginTop: 0,
       "& span": {
         color: "#6767ff"
       }
     },
-   
+
   },
   defaultSideBar: {
     display: "flex",
@@ -82,9 +82,7 @@ function CreateProject(props) {
   const [title, setTitle] = useState()
   const [description, setDescription] = useState()
 
-  useEffect(() => {
 
-  }, [])
 
   // const user = state.user
   // const {userId} = user.id
@@ -120,8 +118,8 @@ function CreateProject(props) {
       <form onSubmit={handleSubmit} className={classes.defaultForm}>
         <div className={classes.defaultFormHolder}>
           <div className={classes.defaultFormTitle}>
-              <h2>
-                Create a Project
+            <h2>
+              Create a Project
               </h2>
           </div>
           <div className={classes.formControlHolder}>

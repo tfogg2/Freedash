@@ -43,6 +43,8 @@ function Projects() {
         }
       }
       fetchProjects()
+    } else {
+      appDispatch({ type: "fetchProjects", data: [] })
     }
   }, [])
 
@@ -51,7 +53,7 @@ function Projects() {
     <ul className={classes.projectList}>
       {appState.projects.map(project => {
         return (
-          <div className={classes.project}>
+          <div className={classes.project} >
             <li>
               {project.title}
             </li>

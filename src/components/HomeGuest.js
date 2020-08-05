@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { createUseStyles } from "react-jss"
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import clsx from "clsx"
 import HeaderLoggedOut from "./HeaderLoggedOut"
 
@@ -9,29 +9,47 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    flexDirection: "column",
-    minHeight: "200vh"
+    minHeight: "200vh",
+    flexDirection: "column"
   },
   homeText: {
     display: theme.layout.default.display,
-    flex: 2,
+    flex: 1,
+    height: "fit-content",
     flexDirection: "column",
-    width: "100%",
+    width: "80%",
+    "@media (min-width: 601px)": {
+      width: "50%"
+    },
+    "@media (max-width: 600px)": {
+      width: "80%"
+    },
     marginBottom: theme.layout.default.marginBottom,
-    alignItems: theme.layout.default.alignItems,
-    justifyContent: theme.layout.default.justifyContent,
+    alignItems: "left",
+    justifyContent: "center",
+    "& h1": {
+      display: theme.layout.default.display,
+      flex: 0,
+      fontSize: "72px",
+      width: "50%",
+      alignSelf: "flex-center",
+      margin: 0
+    },
     "& h2": {
       display: theme.layout.default.display,
-      alignSelf: "flex-center"
-    },
-    "& p": {
-      display: theme.layout.default.display
+      fontSize: 25,
+      lineHeight: "32px",
+      width: "50%",
+      margin: "40px 0",
+      flex: 0,
     },
     "& a": {
       textDecoration: "none",
       "& button": {
         display: "flex",
         alignItems: "center",
+        flex: 1,
+        width: "40%",
         justifyContent: "center",
         background: "#6767ff",
         textDecoration: "none",
@@ -46,7 +64,7 @@ const useStyles = createUseStyles(theme => ({
         border: "1px solid #f1f1f1"
       }
     }
-   
+
   },
   homeScreen: {
     display: theme.layout.default.display,
@@ -76,9 +94,9 @@ function HomeGuest() {
   return (
     <div className={classes.home}>
       <div className={classes.homeText}>
-        <h2 className={classes.homeMsg}>Welcome to Freedash!</h2>
-        <p>Create unlimited projects and track them as you progress.</p>
-        <Link to="/register"><button>Create Account</button></Link>
+        <h1 className={classes.homeMsg}>Home to freelance developers.</h1>
+        <h2>Create unlimited projects and let clients track your progress.</h2>
+        <Link to="/register"><button>Get Started</button></Link>
       </div>
       <div className={clsx(classes.homeScreen, classes.screenOne)}>One</div>
       <div className={clsx(classes.homeScreen, classes.screenTwo)}>Two</div>

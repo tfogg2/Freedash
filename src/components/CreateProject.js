@@ -36,8 +36,20 @@ const useStyles = createUseStyles(theme => ({
 
   },
   defaultSideBar: {
+    transition: ".33s all ease-in-out",
     display: "flex",
-    flex: 2
+    "@media (min-width: 1001px)": {
+      flex: 6
+    },
+    "@media (max-width: 1000px)": {
+      flex: 4
+    },
+    "@media (max-width: 800px)": {
+      flex: 2
+    },
+    "@media (max-width: 600px)": {
+      flex: 0
+    },
   },
   defaultFormHolder: {
     display: "flex",

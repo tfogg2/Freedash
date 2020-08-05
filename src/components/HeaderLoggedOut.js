@@ -20,7 +20,12 @@ const useStyles = createUseStyles(theme => ({
     }
   },
   mainNav: {
-    display: theme.layout.default.display,
+    "@media (min-width: 601px)": {
+      display: theme.layout.default.display
+    },
+    "@media (max-width: 600px)": {
+      display: "none"
+    },
     flex: 1,
     padding: "0 40px",
     justifyContent: "right",

@@ -36,8 +36,20 @@ const useStyles = createUseStyles(theme => ({
     }
   },
   defaultSideBar: {
+    transition: ".33s all ease-in-out",
     display: "flex",
-    flex: 2
+    "@media (min-width: 1001px)": {
+      flex: 6
+    },
+    "@media (max-width: 1000px)": {
+      flex: 4
+    },
+    "@media (max-width: 800px)": {
+      flex: 2
+    },
+    "@media (max-width: 600px)": {
+      flex: 0
+    },
   },
   defaultFormHolder: {
     display: "flex",
@@ -46,11 +58,10 @@ const useStyles = createUseStyles(theme => ({
   },
   formControlHolder: {
     margin: "10px 0",
-    display: "flex",
-    flex: 1,
+    display: "block",
     "& input": {
       height: "40px",
-      display: "flex",
+      width: "100%",
       textAlign: "center",
       background: "#fff",
       fontSize: 14,
@@ -62,6 +73,8 @@ const useStyles = createUseStyles(theme => ({
       height: "40px",
       display: "flex",
       alignItems: "center",
+      margin: "0 auto",
+      textAlign: "center",
       justifyContent: "center",
       background: "#6767ff",
       color: "#fff",
@@ -71,6 +84,10 @@ const useStyles = createUseStyles(theme => ({
       boxSizing: "border-box",
       border: "1px solid #f1f1f1"
     }
+  },
+  defaultFormAlert: {
+    color: "#FF8680",
+    marginTop: 10
   }
 }))
 
@@ -312,19 +329,19 @@ function Register(props) {
           <div className={classes.formControlHolder}>
             <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" type="text" placeholder="you@example.com" autoComplete="off" />
             <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
+              <div className={classes.defaultFormAlert}>{state.email.message}</div>
             </CSSTransition>
           </div>
           <div className={classes.formControlHolder}>
             <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" type="password" placeholder="Create a password" />
             <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
+              <div className={classes.defaultFormAlert}>{state.password.message}</div>
             </CSSTransition>
           </div>
           <div className={classes.formControlHolder}>
             <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" type="password" placeholder="Confirm password" />
             <CSSTransition in={state.passwordCheck.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.passwordCheck.message}</div>
+              <div className={classes.defaultFormAlert}>{state.passwordCheck.message}</div>
             </CSSTransition>
           </div>
           <div className={classes.formControlHolder}>

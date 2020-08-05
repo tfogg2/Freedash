@@ -12,6 +12,7 @@ import Login from "./components/Login"
 import Projects from "./components/Projects"
 import CreateProject from "./components/CreateProject"
 import ProjectView from "./components/ProjectView"
+import FlashMessages from "./components/FlashMessages"
 import Register from "./components/Register"
 import Footer from "./components/Footer"
 import DispatchContext from "./DispatchContext"
@@ -171,11 +172,12 @@ function App(props) {
         <StateContext.Provider value={state}>
           <BrowserRouter>
             {state.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />}
+            <FlashMessages messages={state.flashMessages} />
             <Switch>
               {state.loggedIn ? <Route path="/" component={Home} exact /> : <Route path="/" component={HomeGuest} exact />}
               <Route path="/login" component={Login} exact />
               <Route path="/projects" component={Projects} exact />
-              
+
               <Route path="/projects/create" component={CreateProject} exact />
               <Route path="/projects/:id" component={ProjectView} exact />
               <Route path="/register" component={Register} exact />

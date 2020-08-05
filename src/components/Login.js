@@ -5,11 +5,17 @@ import DispatchContext from "../DispatchContext"
 import clsx from "clsx"
 
 const useStyles = createUseStyles(theme => ({
+  defaultPage: {
+    display: "flex",
+    flexDirection: "column"
+  },
   defaultFormPage: {
     display: "flex",
-    background: "#6767ff",
-    padding: "100px 0",
-    flexDirection: "row"
+    background: "#F7F9FA",
+    paddingTop: 80,
+    padding: "0",
+    flexDirection: "row",
+    height: "100vh"
   },
   defaultForm: {
     display: "flex",
@@ -17,7 +23,7 @@ const useStyles = createUseStyles(theme => ({
     background: "#f9f9f9",
     borderRadius: 10,
     padding: 50,
-    alignItems: "center",
+    height: "fit-content",
     justifyContent: "center",
     flexDirection: "row"
   },
@@ -33,8 +39,20 @@ const useStyles = createUseStyles(theme => ({
     }
   },
   defaultSideBar: {
+    transition: ".33s all ease-in-out",
     display: "flex",
-    flex: 2
+    "@media (min-width: 1001px)": {
+      flex: 6
+    },
+    "@media (max-width: 1000px)": {
+      flex: 4
+    },
+    "@media (max-width: 800px)": {
+      flex: 2
+    },
+    "@media (max-width: 600px)": {
+      flex: 0
+    },
   },
   defaultFormHolder: {
     display: "flex",
@@ -99,29 +117,32 @@ function Login(props) {
   }
 
   return (
-    <div className={classes.defaultFormPage}>
-      <div className={classes.defaultSideBar}></div>
-      <form onSubmit={handleSubmit} className={classes.defaultForm}>
-        <div className={classes.defaultFormHolder}>
-          <div className={classes.defaultFormTitle}>
-            <h2>
-              Login to <span>FreeDash</span>
-            </h2>
-          </div>
+    <div className={classes.defaultPage}>
+      <div className={classes.defaultFormPage}>
+        <div className={classes.defaultSideBar}></div>
+        <form onSubmit={handleSubmit} className={classes.defaultForm}>
           <div className={classes.defaultFormHolder}>
-            <div className={classes.formControlHolder}>
-              <input onChange={e => setEmail(e.target.value)} name="email" className={classes.formControl} type="text" placeholder="Email" autoComplete="off" />
+            <div className={classes.defaultFormTitle}>
+              <h2>
+                Sign in to use <span>FreeDash</span>
+              </h2>
+              <p>Freedash is a <span>completely free</span> product made for freelance developers. Enjoy!</p>
             </div>
-            <div className={classes.formControlHolder}>
-              <input onChange={e => setPassword(e.target.value)} name="password" className={classes.formControl} type="password" placeholder="Password" />
-            </div>
-            <div className={classes.formControlHolder}>
-              <button type="submit">Sign In</button>
+            <div className={classes.defaultFormHolder}>
+              <div className={classes.formControlHolder}>
+                <input onChange={e => setEmail(e.target.value)} name="email" className={classes.formControl} type="text" placeholder="Email" autoComplete="off" />
+              </div>
+              <div className={classes.formControlHolder}>
+                <input onChange={e => setPassword(e.target.value)} name="password" className={classes.formControl} type="password" placeholder="Password" />
+              </div>
+              <div className={classes.formControlHolder}>
+                <button type="submit">Sign In</button>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-      <div className={classes.defaultSideBar}></div>
+        </form>
+        <div className={classes.defaultSideBar}></div>
+      </div>
     </div>
   )
 }

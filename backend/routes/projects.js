@@ -40,7 +40,6 @@ router.route("/:id").get((req, res) => {
   Project.findById(req.params.id)
     .then(project => {
       res.json(project)
-      console.log(project)
     })
     .catch(err => res.status(400).json("Error: " + err))
 })
@@ -58,7 +57,6 @@ router.delete("/:id", auth, async (req, res) => {
 
 router.post("/:id/edit", auth, async (req, res) => {
   const token = req.header("freedashToken")
-  console.log(req.body.title)
   Project.findById(req.params.id)
     .then(project => {
       project.title = req.body.title

@@ -19,17 +19,26 @@ function ProjectView(props) {
             title: "",
             description: ""
         },
-        editCount: 0
+        editCount: 0,
+        id: useParams().id,
     }
 
     function ourReducer(draft, action) {
         switch (action.type) {
             case "setProject":
-                draft.project = action.data
+                draft.project.title = action.value.title
+                draft.project.description = action.value.description
+                draft.editCount++
                 return
-            case "titleEdit":
-                draft.project.title = action.data
+            case "editTitle":
+                draft.project.title = action.value
+                draft.editCount++
                 return
+            case "editDescription":
+                draft.project.description = action.value
+                draft.editCount++
+                return
+            
         }
     }
 
@@ -41,9 +50,14 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const response = await Axios.get(`http://localhost:5000/projects/${id}`, { headers: { "freedashToken": appState.token } })
-                    dispatch({ type: "setProject", data: response.data })
-                    console.log(response.data)
+                    const response = await Axios.get(`http://localhost:5000/projects/${id}`, { headers: { "freedashToken": appState.token } }, { cancelToken: ourRequest.token })
+                    if (response.data){
+                        dispatch({ type: "setProject", value: response.data })
+                        console.log(response.data)
+                    } else {
+                        console.log("There was an error getting a response from the server.")
+                    }
+
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -55,31 +69,18 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [])
+    }, [id])
 
-    function handleTitleEdit(e) {
-        e.preventDefault()
-        dispatch({ type: "titleEdit", data: e.value })
-        dispatch({ type: "descriptionEdit", data: state.project.description })
-    }
-
-    function handleDescriptionEdit(e) {
-        e.preventDefault()
-        dispatch({ type: "descriptionEdit", data: e.value })
-        dispatch({ type: "titleEdit", data: state.project.title })
-    }
 
 
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
-        console.log(state.project._id)
-        console.log(state.project.title)
         if (id) {
             async function fetchProject() {
                 try {
-                    const response = await Axios.post(`http://localhost:5000/projects/${id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } })
-                    console.log(response.data)
+                    const edit = await Axios.post(`http://localhost:5000/projects/${id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, {cancelToken: ourRequest.token})
+                    // console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -91,24 +92,17 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.project])
-
-
-
-    useEffect(() => {
-        console.log(state.project.title)
-    }, [state.project])
-
+    }, [state.editCount])
+    
     const classes = useStyles()
     const project = state.project
     return (
         <div className={classes.project}>
             <div className={classes.projectHeader}>
                 <form>
-                    <input onKeyUp={e => dispatch({ type: "titleEdit", value: e.target.value })} placeholder={project ? project.title : "Give your project a title"}>{project.title}</input>
-                    <textarea onKeyUp={handleDescriptionEdit} value={project ? project.descruotion : "Build something awesome."}></textarea>
+                    <input type="text" onChange={e => dispatch({type: "editTitle", value: e.target.value})} value={project.title !== "" ? project.title : ""} placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
+                    <textarea onChange={e => dispatch({type: "editDescription", value: e.target.value})} value={project.description !== ""  ? project.description : ""} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
                 </form>
-                <p>{project.description}</p>
             </div>
         </div>
     )

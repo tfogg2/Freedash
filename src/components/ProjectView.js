@@ -5,9 +5,45 @@ import { useImmerReducer } from 'use-immer'
 import StateContext from '../StateContext'
 import Axios from 'axios'
 
-const useStyles = createUseStyles(theme => {
+const useStyles = createUseStyles(theme => ({
+    project: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 100
+    },
+    formHolder: {
+        "@media (max-width: 600px)": {
+            width: "80%",
+        },
+        "@media (min-width: 601px) and (max-width: 1200px) ": {
+            width: "60%",
+        },
+        "@media (min-width: 1201px)": {
+            width: "50%",
+        },
+    },
+    projectTitle: {
+        background: "#fff",
+        border: "none",
+        width: "100%",
+        outline: 0,
+        fontSize: 40,
+        lineHeight: "48px",
+        marginBottom: 40,
+    },
+    projectDescription: {
+        background: "#fff",
+        border: "none",
+        width: "100%",
+        outline: 0,
+        fontSize: 16,
+        lineHeight: "26px",
+        marginBottom: 40,
+    },
 
-})
+}))
 
 function ProjectView(props) {
     const { id } = useParams()
@@ -17,9 +53,11 @@ function ProjectView(props) {
     const initialState = {
         project: {
             title: "",
-            description: ""
+            description: "",
+            isLoaded: false
         },
         editCount: 0,
+        editTitleCount: 0,
         id: useParams().id,
     }
 
@@ -28,16 +66,21 @@ function ProjectView(props) {
             case "setProject":
                 draft.project.title = action.value.title
                 draft.project.description = action.value.description
-                draft.editCount++
+                draft.project.isLoaded = true
                 return
             case "editTitle":
                 draft.project.title = action.value
-                draft.editCount++
                 return
             case "editDescription":
                 draft.project.description = action.value
-                draft.editCount++
                 return
+            case "isLoaded":
+                draft.project.isLoaded = action.value
+                return
+
+            case "editCount":
+                draft.editCount++
+
 
         }
     }
@@ -50,8 +93,10 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const response = await Axios.get(`http://localhost:5000/projects/${id}`, { headers: { "freedashToken": appState.token } }, { cancelToken: ourRequest.token })
+                    const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.token } }, { cancelToken: ourRequest.token })
                     if (response.data) {
+                        console.log(response.data)
+                        dispatch({ type: "isLoaded", value: true })
                         dispatch({ type: "setProject", value: response.data })
                         console.log(response.data)
                     } else {
@@ -69,9 +114,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.id])
-
-
+    }, [id])
 
 
     useEffect(() => {
@@ -79,8 +122,8 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-                    // console.log(edit.data)
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -92,20 +135,68 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.editCount])
+    }, [state.project.title])
+
+
+    useEffect(() => {
+        const ourRequest = Axios.CancelToken.source()
+        if (id) {
+            async function fetchProject() {
+                try {
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    console.log(edit.data)
+                } catch (e) {
+                    console.log("There was an error.")
+                }
+            }
+            fetchProject()
+            return () => {
+                ourRequest.cancel()
+            }
+        } else {
+            console.log('Something went wrong.')
+        }
+    }, [state.project.description])
+
+
 
     const classes = useStyles()
     const project = state.project
-    return (
-        <div className={classes.project}>
-            <div className={classes.projectHeader}>
-                <form>
-                    <input type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title !== "" ? project.title : ""} placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
-                    <textarea onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description !== "" ? project.description : ""} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
-                </form>
+
+    if (state.project.isLoaded) {
+        return (
+            <div className={classes.project}>
+                <div className={classes.formHolder}>
+                    <form >
+                        <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
+                    </form>
+                </div>
+                <div className={classes.formHolder}>
+                    <form>
+                        <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
+                    </form>
+                </div>
+            </div >
+        )
+    } else {
+        return (
+            <div className={classes.project}>
+                <div className={classes.formHolder}>
+                    <form >
+                        <input className={classes.projectTitle} type="text" placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
+                    </form>
+                </div>
+                <div className={classes.formHolder}>
+                    <form>
+                        <textarea className={classes.projectDescription} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
+                    </form>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+
+
+
 }
 
 export default ProjectView

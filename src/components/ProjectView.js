@@ -38,7 +38,7 @@ function ProjectView(props) {
                 draft.project.description = action.value
                 draft.editCount++
                 return
-            
+
         }
     }
 
@@ -51,7 +51,7 @@ function ProjectView(props) {
             async function fetchProject() {
                 try {
                     const response = await Axios.get(`http://localhost:5000/projects/${id}`, { headers: { "freedashToken": appState.token } }, { cancelToken: ourRequest.token })
-                    if (response.data){
+                    if (response.data) {
                         dispatch({ type: "setProject", value: response.data })
                         console.log(response.data)
                     } else {
@@ -69,7 +69,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [id])
+    }, [state.id])
 
 
 
@@ -79,7 +79,7 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, {cancelToken: ourRequest.token})
+                    const edit = await Axios.post(`http://localhost:5000/projects/${id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     // console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
@@ -93,15 +93,15 @@ function ProjectView(props) {
             console.log('Something went wrong.')
         }
     }, [state.editCount])
-    
+
     const classes = useStyles()
     const project = state.project
     return (
         <div className={classes.project}>
             <div className={classes.projectHeader}>
                 <form>
-                    <input type="text" onChange={e => dispatch({type: "editTitle", value: e.target.value})} value={project.title !== "" ? project.title : ""} placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
-                    <textarea onChange={e => dispatch({type: "editDescription", value: e.target.value})} value={project.description !== ""  ? project.description : ""} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
+                    <input type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title !== "" ? project.title : ""} placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
+                    <textarea onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description !== "" ? project.description : ""} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
                 </form>
             </div>
         </div>

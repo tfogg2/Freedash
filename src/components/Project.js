@@ -1,20 +1,25 @@
 import React, { useEffect } from "react"
 import { createUseStyles } from "react-jss"
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const useStyles = createUseStyles(theme => ({
   project: {
-   display: "flex",
-   flex: 1,
-   flexDirection: "column",
-   background: "#fff",
-   border: "1px solid #f9f9f9",
-   padding: "0px 20px",
-   margin: -1,
-   minWidth: 300,
-   '&:hover': {
-     background: "#e0e0e0"
-   }
+    display: "flex",
+    flex: 1,
+    flexDirection: "column",
+    background: "#fff",
+    borderBottom: "1px solid #e8e8e8",
+    padding: "10px 20px",
+    minWidth: 300,
+    '&:hover': {
+      background: "#e0e0e0"
+    },
+    '& h2': {
+      margin: "10px 0"
+    },
+    '& p': {
+      margin: 0
+    }
   }
 }))
 

@@ -49,11 +49,28 @@ router.delete("/:id", auth, async (req, res) => {
   const project = await Project.findOne({ _id: req.params.id })
   if (!project)
     return res.status(400).json({
-      msg: "No todo found with this ID that belongs to the currently logged in user."
+      msg: "No project found with this ID that belongs to the currently logged in user."
     })
 
   const deletedProject = await Project.findByIdAndDelete(req.params.id)
   res.json(deletedProject)
+})
+
+router.post("/:id/edit", auth, async (req, res) => {
+  const token = req.header("freedashToken")
+  console.log(req.body.title)
+  Project.findById(req.params.id)
+    .then(project => {
+      project.title = req.body.title
+      project.description = req.body.description
+
+
+      project
+        .save()
+        .then(() => res.json(project))
+        .catch(err => res.status(400).json("Error: " + err))
+    })
+    .catch(err => res.status(400).json("Error: " + err))
 })
 
 router.route("/update/:id").post((req, res) => {
@@ -61,12 +78,10 @@ router.route("/update/:id").post((req, res) => {
     .then(project => {
       project.title = req.body.title
       project.description = req.body.description
-      project.duration = Number(req.body.duration)
-      project.date = Date.parse(req.body.date)
 
       project
         .save()
-        .then(() => res.json("Project Updated!"))
+        .then(() => res.json(project))
         .catch(err => res.status(400).json("Error: " + err))
     })
     .catch(err => res.status(400).json("Error: " + err))

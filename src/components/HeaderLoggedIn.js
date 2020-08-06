@@ -9,7 +9,6 @@ const useStyles = createUseStyles(theme => ({
   header: {
     display: theme.layout.default.display,
     padding: theme.layout.default.padding,
-    flexDirection: theme.layout.default.flexDirection,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent
   },
@@ -20,7 +19,7 @@ const useStyles = createUseStyles(theme => ({
     padding: "0 40px",
     "& a": {
       textDecoration: "none",
-      color: "black"
+      color: "#6767ff"
     }
   },
   mainNav: {
@@ -38,10 +37,18 @@ const useStyles = createUseStyles(theme => ({
     },
     "& a": {
       marginRight: 20,
-      textDecoration: "none"
+      textDecoration: "none",
+      color: "#1d1d1d"
+    },
+    "& a:hover": {
+      marginRight: 20,
+      textDecoration: "none",
+      color: "#6767ff"
     }
+
   }
 }))
+
 
 function HeaderLoggedIn(props) {
   const classes = useStyles()

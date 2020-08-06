@@ -9,13 +9,42 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    flexDirection: "column",
+    flexDirection: "row",
     "@media ( min-width: 550px )": {}
   },
-
-  homeText: {
-    display: theme.layout.default.display,
+  homeLeft: {
+    display: "flex",
+    flex: 1
+  },
+  homeAction: {
+    display: "flex",
     flex: 1,
+    justifyContent: "center",
+    "& a": {
+      textDecoration: "none",
+    },
+    "& button": {
+      display: "flex",
+      alignItems: "center",
+      flex: 1,
+      justifyContent: "center",
+      background: "#6767ff",
+      textDecoration: "none",
+      fontWeight: "900",
+      color: "#fff",
+      fontSize: 16,
+      cursor: "pointer",
+      height: 60,
+      padding: "0 20px",
+      borderRadius: 5,
+      boxSizing: "border-box",
+      border: "1px solid #f1f1f1"
+    }
+  },
+
+  homeDash: {
+    display: theme.layout.default.display,
+    flex: 4,
     flexDirection: "column",
     width: "100%",
     marginBottom: theme.layout.default.marginBottom,
@@ -30,19 +59,6 @@ const useStyles = createUseStyles(theme => ({
     },
     "& a": {
       textDecoration: "none"
-    },
-    "& button[type='submit']": {
-      height: "40px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "#6767ff",
-      color: "#fff",
-      fontSize: 18,
-      flex: 2,
-      borderRadius: 5,
-      boxSizing: "border-box",
-      border: "1px solid #f1f1f1"
     }
   }
 }))
@@ -51,13 +67,17 @@ function Home(props) {
   const classes = useStyles()
   return (
     <div className={clsx(classes.homeDashboard, classes.home)}>
-      <div className={classes.homeText}>
-        <h2 className={classes.homeMsg}>Welcome to your Free Dashboard!</h2>
-        <p>Create unlimited projects and track them as you progress.</p>
-        <Link to="/projects/create">
-          <button type="submit">Create Project</button>
-        </Link>
+      <div className={classes.homeLeft}></div>
+      <div className={classes.homeDash}>
+        {/* <div className={classes.homeDashNav}>
+          <h2>Projects</h2>
+        </div> */}
         <Projects />
+      </div>
+      <div className={classes.homeAction}>
+        <Link to="/projects/create">
+          <button type="submit">Create new project</button>
+        </Link>
       </div>
     </div>
   )

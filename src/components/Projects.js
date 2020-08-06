@@ -12,8 +12,8 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: "column",
     flex: 1,
     listStyleType: "none",
-    width: "80%",
-    padding: "0 40px"
+    width: "100%",
+    padding: "0 0px"
   }
 }))
 
@@ -48,7 +48,7 @@ function Projects() {
   return (
     <ul className={classes.projectList}>
       {appState.projects.map(project => {
-        return (   
+        return (
           <Project project={project} />
         )
       })}

@@ -1,13 +1,16 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { createUseStyles } from "react-jss"
 import { Link } from "react-router-dom"
+import Axios from 'axios'
+import DispatchContext from '../DispatchContext'
+import StateContext from '../StateContext'
 import clsx from "clsx"
 import Projects from "./Projects"
 
 const useStyles = createUseStyles(theme => ({
   home: {
     display: theme.layout.default.display,
-    alignItems: theme.layout.default.alignItems,
+    alignItems: "start",
     justifyContent: theme.layout.default.justifyContent,
     flexDirection: "row",
     "@media ( min-width: 550px )": {}
@@ -18,15 +21,16 @@ const useStyles = createUseStyles(theme => ({
   },
   homeAction: {
     display: "flex",
-    flex: 1,
+    flex: 2,
+    lineHeight: "10px",
+    paddingTop: 55,
     justifyContent: "center",
-    "& a": {
-      textDecoration: "none",
-    },
     "& button": {
       display: "flex",
       alignItems: "center",
-      flex: 1,
+      width: "50%",
+      minWidth: "186px",
+      margin: "0 auto",
       justifyContent: "center",
       background: "#6767ff",
       textDecoration: "none",
@@ -34,7 +38,7 @@ const useStyles = createUseStyles(theme => ({
       color: "#fff",
       fontSize: 16,
       cursor: "pointer",
-      height: 60,
+      height: 42,
       padding: "0 20px",
       borderRadius: 5,
       boxSizing: "border-box",
@@ -63,7 +67,38 @@ const useStyles = createUseStyles(theme => ({
   }
 }))
 
+
+
+
+
+
 function Home(props) {
+  const appDispatch = useContext(DispatchContext)
+  const appState = useContext(StateContext)
+
+  async function handleNewProject(e) {
+    e.preventDefault()
+    try {
+
+      const token = appState.user.token
+      // const check = await appDispatch({type: "checkToken"})
+      // const check = await Axios.post("http://localhost:5000/users/checkToken", { token: loggedInUser.token }, { cancelToken: ourRequest.token })
+      const response = await Axios.post("http://localhost:5000/projects/create", { title: "", description: "", userId: appState.user.id }, { headers: { "freedashToken": token } })
+      if (response.data) {
+        console.log(response.data)
+        appDispatch({ type: "createProject", data: response.data })
+
+        props.history.push(`/projects/${response.data._id}`)
+      } else {
+        appDispatch({ type: "flashMessage", value: "" })
+      }
+
+
+    } catch (e) {
+      console.log("There was a problem!" + e)
+    }
+  }
+
   const classes = useStyles()
   return (
     <div className={clsx(classes.homeDashboard, classes.home)}>
@@ -75,9 +110,7 @@ function Home(props) {
         <Projects />
       </div>
       <div className={classes.homeAction}>
-        <Link to="/projects/create">
-          <button type="submit">Create new project</button>
-        </Link>
+        <button onClick={handleNewProject} type="submit">Create new project</button>
       </div>
     </div>
   )

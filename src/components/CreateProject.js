@@ -83,7 +83,44 @@ const useStyles = createUseStyles(theme => ({
       boxSizing: "border-box",
       border: "1px solid #f1f1f1"
     }
-  }
+  },
+  project: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 100
+  },
+  formHolder: {
+    "@media (max-width: 600px)": {
+      width: "80%",
+    },
+    "@media (min-width: 601px) and (max-width: 1200px) ": {
+      width: "60%",
+    },
+    "@media (min-width: 1201px)": {
+      width: "50%",
+    },
+  },
+  projectTitle: {
+    background: "#fff",
+    border: "none",
+    width: "100%",
+    outline: 0,
+    fontSize: 40,
+    lineHeight: "48px",
+    marginBottom: 40,
+  },
+  projectDescription: {
+    background: "#fff",
+    border: "none",
+    width: "100%",
+    outline: 0,
+    fontSize: 16,
+    lineHeight: "26px",
+    marginBottom: 40,
+  },
+
 }))
 
 function CreateProject(props) {
@@ -125,28 +162,23 @@ function CreateProject(props) {
 
   const classes = useStyles()
   return (
-    <div className={classes.defaultFormPage}>
-      <div className={classes.defaultSideBar}></div>
-      <form onSubmit={handleSubmit} className={classes.defaultForm}>
-        <div className={classes.defaultFormHolder}>
-          <div className={classes.defaultFormTitle}>
-            <h2>
-              Create a Project
-              </h2>
-          </div>
-          <div className={classes.formControlHolder}>
-            <input onChange={e => setTitle(e.target.value)} name="title" className={classes.formControl} type="text" placeholder="Title" autoComplete="off" />
-          </div>
-          <div className={classes.formControlHolder}>
-            <input onChange={e => setDescription(e.target.value)} name="description" className={classes.formControl} type="description" placeholder="Description" />
-          </div>
-          <div className={classes.formControlHolder}>
-            <button type="submit">Create Project</button>
-          </div>
-        </div>
-      </form>
-      <div className={classes.defaultSideBar}></div>
-    </div>
+
+    <div className={classes.project}>
+      <div className={classes.formHolder}>
+        <form >
+          <input className={classes.projectTitle} onChange={e => setTitle(e.target.value)} name="title" type="text" placeholder="Title" autoComplete="off" />
+        </form>
+      </div>
+      <div className={classes.formHolder}>
+        <form>
+          <textarea className={classes.projectDescription} onChange={e => setDescription(e.target.value)} name="description" type="description" placeholder="Description" />
+        </form>
+      </div>
+    </div >
+    /* <div className={classes.formControlHolder}>
+      <button type="submit">Create Project</button>
+    </div> */
+
   )
 }
 

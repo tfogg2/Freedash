@@ -45,13 +45,14 @@ function Projects() {
   }, [])
 
   const classes = useStyles()
+  const projects = appState.projects
   return (
     <ul className={classes.projectList}>
-      {appState.projects.map(project => {
+      {projects.map(project => {
         return (
           <Project project={project} />
         )
-      })}
+      }).reverse()}
     </ul>
   )
 }

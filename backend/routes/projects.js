@@ -106,10 +106,17 @@ router.delete("/:id", auth, async (req, res) => {
 })
 
 router.post("/:id/edit", auth, async (req, res) => {
-  const token = req.header("freedashToken")
+  // const token = req.header("freedashToken")
+  // const projects = await Project.find(req.body.userId)
+  // const projectCount = projects.length
   Project.findById(req.params.id)
     .then(project => {
-      project.title = req.body.title
+      if (req.body.title) {
+        project.title = req.body.title
+      } else {
+        project.title = "untitled"
+      }
+
       project.description = req.body.description
 
 
@@ -125,7 +132,10 @@ router.post("/:id/edit", auth, async (req, res) => {
 router.route("/update/:id").post((req, res) => {
   Project.findById(req.params.id)
     .then(project => {
-      project.title = req.body.title
+      if (project.title) {
+        project.title = req.body.title
+      }
+
       project.description = req.body.description
 
       project

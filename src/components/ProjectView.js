@@ -4,6 +4,8 @@ import { createUseStyles } from 'react-jss'
 import { useImmerReducer } from 'use-immer'
 import StateContext from '../StateContext'
 import Axios from 'axios'
+import Step from './Step'
+import clsx from 'clsx'
 
 const useStyles = createUseStyles(theme => ({
     project: {
@@ -37,12 +39,35 @@ const useStyles = createUseStyles(theme => ({
         background: "#fff",
         border: "none",
         width: "100%",
-        minHeight: "200px",
         outline: 0,
         fontSize: 16,
         lineHeight: "26px",
         marginBottom: 40,
     },
+    hide: {
+        display: "none"
+    },
+    stepForm: {
+        display: "flex",
+        flex: 1,
+        "& input": {
+            flex: 1,
+            display: "flex",
+            height: 40,
+            padding: 5,
+            margin: "0 5px"
+        },
+        "& span": {
+            flex: 1,
+            display: "flex",
+        },
+        "@media (max-width: 600px)": {
+            flexDirection: "column"
+        },
+        "@media (min-width: 601px)": {
+            flexDirection: "row"
+        },
+    }
 
 }))
 
@@ -62,6 +87,7 @@ function ProjectView(props) {
             name: "",
             duration: 0
         },
+        isStepOpen: false,
         editCount: 0,
         editTitleCount: 0,
         token: appState.user.token,
@@ -80,12 +106,25 @@ function ProjectView(props) {
                 draft.project.title = action.value
                 return
 
+            case "toggleStep":
+                draft.isStepOpen = !draft.isStepOpen
+                return
+
+            case "closeStep":
+                draft.isStepOpen = false
+                return
+
             case "addStep":
                 draft.project.steps.push(action.value)
                 return
 
             case "addSteps":
                 draft.project.steps.push(action.data)
+                return
+
+            case "clearNewStep":
+                draft.newStep.name = ""
+                draft.newStep.duration = null
                 return
 
             case "stepName":
@@ -171,11 +210,16 @@ function ProjectView(props) {
 
 
     useEffect(() => {
+        dispatch({ type: "clearNewStep" })
+    }, [state.project.steps])
+
+
+    useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
@@ -216,11 +260,12 @@ function ProjectView(props) {
         const ourRequest = Axios.CancelToken.source()
         try {
             const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-            console.log(response.data)
             if (response.data) {
                 console.log(response.data)
-                dispatch({ type: "isLoaded", value: true })
                 dispatch({ type: "setProject", value: response.data })
+                dispatch({ type: "isLoaded", value: true })
+                dispatch({ type: "clearNewStep" })
+                dispatch({ type: "closeStep" })
             } else {
                 console.log("There was an error getting a response from the server.")
             }
@@ -232,6 +277,12 @@ function ProjectView(props) {
         }
     }
 
+    function toggleAddStep(e) {
+        e.preventDefault()
+        dispatch({ type: "stepDuration", value: "" })
+        console.log(state.newStep.duration)
+        dispatch({ type: "toggleStep" })
+    }
 
 
     const classes = useStyles()
@@ -250,20 +301,21 @@ function ProjectView(props) {
                         <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
                     </form>
                 </div>
-                <div className={classes.formHolder}>
-                    <form onSubmit={handleAddStep}>
-                        <input className={classes.stepName} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
-                        <input type="number" className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
-                        <button type="submit">Add Step</button>
+                <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button>
+                <div className={state.isStepOpen ? clsx(classes.stepFormHolder, classes.formHolder) : clsx(classes.formHolder, classes.hide)}>
+                    <form onSubmit={handleAddStep} className={classes.stepForm}>
+                        <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
+                        <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
+                        <button type="submit" >Create</button>
                     </form>
+                    <span onClick={toggleAddStep}>x</span>
                 </div>
                 <div className={classes.steps}>
-
                     {project.steps.map(step => {
                         return (
-                            <h2>{step.name}</h2>
+                            <Step step={step} />
                         )
-                    })}
+                    }).reverse()}
                 </div>
             </div >
         )

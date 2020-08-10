@@ -37,6 +37,7 @@ const useStyles = createUseStyles(theme => ({
         background: "#fff",
         border: "none",
         width: "100%",
+        minHeight: "400px",
         outline: 0,
         fontSize: 16,
         lineHeight: "26px",
@@ -54,6 +55,7 @@ function ProjectView(props) {
         project: {
             title: "",
             description: "",
+            steps: [],
             isLoaded: false
         },
         editCount: 0,
@@ -70,6 +72,9 @@ function ProjectView(props) {
                 return
             case "editTitle":
                 draft.project.title = action.value
+                return
+            case "addStep": 
+                draft.project.steps.push(action.data)
                 return
             case "editDescription":
                 draft.project.description = action.value
@@ -158,6 +163,19 @@ function ProjectView(props) {
         }
     }, [state.project.description])
 
+    async function handleAddStep(e) {
+        e.preventDefault()
+        const ourRequest = Axios.CancelToken.source()
+        try {
+            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+        } catch {
+            console.log("There was an error")
+        }
+        return () => {
+            ourRequest.cancel()
+        }
+    }
+
 
 
     const classes = useStyles()
@@ -167,13 +185,20 @@ function ProjectView(props) {
         return (
             <div className={classes.project}>
                 <div className={classes.formHolder}>
-                    <form >
-                        <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"}></input>
+                    <form>
+                        <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"}/>
                     </form>
                 </div>
                 <div className={classes.formHolder}>
                     <form>
-                        <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
+                        <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."}/>
+                    </form>
+                </div>
+                <div className={classes.formHolder}>
+                    <form onSubmit={handleAddStep}>
+                        <input className={classes.stepName} onChange={e => dispatch({ type: "stepName", value: e.target.value })}/>
+                        <input className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
+                        <button type="submit">Add Step</button>
                     </form>
                 </div>
             </div >
@@ -191,6 +216,7 @@ function ProjectView(props) {
                         <textarea className={classes.projectDescription} placeholder={project.description !== "" ? "" : "Build something awesome."}></textarea>
                     </form>
                 </div>
+                
             </div>
         )
     }

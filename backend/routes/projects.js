@@ -2,6 +2,7 @@ const router = require("express").Router()
 const auth = require("../middleware/auth")
 const User = require("../models/User.js")
 let Project = require("../models/Project.js")
+let Step = require("../models/Step.js")
 
 router.get("/", auth, async (req, res) => {
   try {
@@ -29,6 +30,39 @@ router.post("/create", auth, async (req, res) => {
     })
     const savedProject = await newProject.save()
     res.json(savedProject)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+
+  // newProject.save().then(() => res.json("Project added!").catch(err => res.status(400).json("Error: " + err)))
+})
+
+router.get("/:id/steps", auth, async (req, res) => {
+  try {
+    // const user = await User.findById(req.user)
+    // const userId = user.id
+    const token = req.header("freedashToken")
+    const { userId, projectId } = req.body
+    const steps = await Step.find({ userId })
+    res.json(steps)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+router.post("/:id/steps/create", auth, async (req, res) => {
+  try {
+    // const user = await User.findById({ _id: req.userId })
+    const { name, duration, projectId, userId } = req.body
+    console.log([name, duration, projectId, userId])
+    const newStep = new Step({
+      name,
+      duration,
+      userId,
+      projectId
+    })
+    const savedStep = await newStep.save()
+    res.json(savedStep)
   } catch (e) {
     res.status(500).json({ error: e.message })
   }

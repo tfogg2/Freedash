@@ -4,7 +4,7 @@ const ProjectSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   title: { type: String },
   description: { type: String },
-  steps: { type: Object }
+  steps: { type: Array }
 })
 
 module.exports = Project = mongoose.model("Project", ProjectSchema)

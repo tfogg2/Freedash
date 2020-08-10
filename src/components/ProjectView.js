@@ -56,14 +56,15 @@ function ProjectView(props) {
             title: "",
             description: "",
             steps: [],
-            newStep: {
-                name: "",
-                duration: 0
-            },
             isLoaded: false
+        },
+        newStep: {
+            name: "",
+            duration: 0
         },
         editCount: 0,
         editTitleCount: 0,
+        token: appState.user.token,
         id: useParams().id,
     }
 
@@ -72,21 +73,27 @@ function ProjectView(props) {
             case "setProject":
                 draft.project.title = action.value.title
                 draft.project.description = action.value.description
+                draft.project.steps = action.value.steps
                 draft.project.isLoaded = true
                 return
             case "editTitle":
                 draft.project.title = action.value
                 return
+
             case "addStep":
+                draft.project.steps.push(action.value)
+                return
+
+            case "addSteps":
                 draft.project.steps.push(action.data)
                 return
 
             case "stepName":
-                draft.project.newStep.name = action.value
+                draft.newStep.name = action.value
                 return
 
             case "stepDuration":
-                draft.project.newStep.duration = action.value
+                draft.newStep.duration = action.value
                 return
 
             case "editDescription":
@@ -111,12 +118,11 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.token } }, { cancelToken: ourRequest.token })
+                    const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     if (response.data) {
                         console.log(response.data)
                         dispatch({ type: "isLoaded", value: true })
                         dispatch({ type: "setProject", value: response.data })
-                        console.log(response.data)
                     } else {
                         console.log("There was an error getting a response from the server.")
                     }
@@ -134,13 +140,42 @@ function ProjectView(props) {
         }
     }, [id])
 
+    // useEffect(() => {
+    //     const ourRequest = Axios.CancelToken.source()
+    //     console.log(id)
+    //     const token = appState.user.token
+    //     console.log(state.token)
+    //     console.log(state.project.steps)
+    //     if (id) {
+    //         async function fetchSteps() {
+    //             try {
+    //                 const steps = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { projectId: id }, { headers: { "freedashToken": token } }, { cancelToken: ourRequest.token })
+    //                 if (steps.data) {
+    //                     console.log(steps.data)
+    //                     dispatch({ type: "addSteps", data: steps.data })
+    //                 } else {
+    //                     console.log("There was an error getting a response from the server.")
+    //                 }
+    //             } catch (e) {
+    //                 console.log("There was an error." + e)
+    //             }
+    //         }
+    //         fetchSteps()
+    //         return () => {
+    //             ourRequest.cancel()
+    //         }
+    //     } else {
+    //         console.log('Something went wrong.')
+    //     }
+    // }, [])
+
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
@@ -161,7 +196,7 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
@@ -180,9 +215,15 @@ function ProjectView(props) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.project.newStep.name, duration: state.project.newStep.duration, projectId: id, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-            dispatch({ type: "addStep", data: response.data })
-            console.log(response)
+            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+            console.log(response.data)
+            if (response.data) {
+                console.log(response.data)
+                dispatch({ type: "isLoaded", value: true })
+                dispatch({ type: "setProject", value: response.data })
+            } else {
+                console.log("There was an error getting a response from the server.")
+            }
         } catch (e) {
             console.log("There was an error:" + e)
         }
@@ -218,11 +259,10 @@ function ProjectView(props) {
                 </div>
                 <div className={classes.steps}>
 
-                    {state.project.steps.map(step => {
+                    {project.steps.map(step => {
                         return (
                             <h2>{step.name}</h2>
                         )
-
                     })}
                 </div>
             </div >

@@ -37,13 +37,15 @@ router.post("/create", auth, async (req, res) => {
   // newProject.save().then(() => res.json("Project added!").catch(err => res.status(400).json("Error: " + err)))
 })
 
-router.get("/:id/steps", auth, async (req, res) => {
+router.get("/:id/steps/", auth, async (req, res) => {
   try {
     // const user = await User.findById(req.user)
     // const userId = user.id
     const token = req.header("freedashToken")
-    const { userId, projectId } = req.body
-    const steps = await Step.find({ userId })
+    console.log(token)
+
+    const { projectId } = req.body
+    const steps = await Step.find({ projectId })
     res.json(steps)
   } catch (e) {
     res.status(500).json({ error: e.message })
@@ -52,7 +54,6 @@ router.get("/:id/steps", auth, async (req, res) => {
 
 router.post("/:id/steps/create", auth, async (req, res) => {
   try {
-    // const user = await User.findById({ _id: req.userId })
     const { name, duration, projectId, userId } = req.body
     console.log([name, duration, projectId, userId])
     const newStep = new Step({
@@ -62,7 +63,14 @@ router.post("/:id/steps/create", auth, async (req, res) => {
       projectId
     })
     const savedStep = await newStep.save()
-    res.json(savedStep)
+    Project.findById(projectId).then(project => {
+      project.steps.push(savedStep)
+      project.save()
+        .then(() => res.json(project))
+        .catch(err => res.status(400).json("Error: " + err))
+    })
+      .catch(err => res.status(400).json("Error: " + err))
+
   } catch (e) {
     res.status(500).json({ error: e.message })
   }
@@ -70,7 +78,15 @@ router.post("/:id/steps/create", auth, async (req, res) => {
   // newProject.save().then(() => res.json("Project added!").catch(err => res.status(400).json("Error: " + err)))
 })
 
-router.route("/:id").get((req, res) => {
+// router.route("/:id").get((req, res) => {
+//   Project.findById(req.params.id)
+//     .then(project => {
+//       res.json(project)
+//     })
+//     .catch(err => res.status(400).json("Error: " + err))
+// })
+
+router.get("/:id", auth, async (req, res) => {
   Project.findById(req.params.id)
     .then(project => {
       res.json(project)
@@ -95,6 +111,7 @@ router.post("/:id/edit", auth, async (req, res) => {
     .then(project => {
       project.title = req.body.title
       project.description = req.body.description
+
 
 
       project

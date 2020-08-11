@@ -60,6 +60,25 @@ const useStyles = createUseStyles(theme => ({
         "@media (min-width: 1201px)": {
             width: "50%",
         },
+        "& input": {
+            background: "#fff",
+            padding: "20px",
+            // boxShadow: "0 1px 1px rgba(0,0,0,0.11),  0 2px 2px rgba(0,0,0,0.11), 0 4px 4px rgba(0,0,0,0.11), 0 6px 8px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.11) ",
+        }
+    },
+    porjectInfo: {
+        "@media (max-width: 600px)": {
+            width: "80%",
+        },
+        "@media (min-width: 601px) and (max-width: 1200px) ": {
+            width: "60%",
+        },
+        "@media (min-width: 1201px)": {
+            width: "50%",
+        },
+        background: "#fff",
+        boxSizing: "border-box",
+        marginBottom: "40px"
     },
     projectTitle: {
         background: "#fff",
@@ -71,7 +90,6 @@ const useStyles = createUseStyles(theme => ({
         marginBottom: 40,
     },
     projectDescription: {
-        background: "#fff",
         border: "none",
         width: "100%",
         outline: 0,
@@ -97,7 +115,17 @@ const useStyles = createUseStyles(theme => ({
         flex: 1,
         width: "50%",
         margin: "0 auto",
-        color: "#fff"
+        color: "#fff",
+        "& h2": {
+            display: "flex",
+            justifyContent: "flex-start",
+            flex: 1
+        },
+        "& span": {
+            marginTop: "10px",
+            cursor: "pointer",
+            fontSize: "24px"
+        }
     },
     stepForm: {
         display: "flex",
@@ -393,22 +421,26 @@ function ProjectView(props) {
     if (state.project.isLoaded) {
         return (
             <div className={classes.project}>
-                <div className={classes.formHolder}>
-                    <form>
-                        <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
-                    </form>
+                <div  className={classes.porjectInfo}>
+                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                        <form>
+                            <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
+                        </form>
+                    </div>
+                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                        <form>
+                            <input className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
+                        </form>
+                    </div>
                 </div>
-                <div className={classes.formHolder}>
-                    <form>
-                        <input className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
-                    </form>
-                </div>
+               
 
                 {!state.isStepOpen ? <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button> : (
                     // MAKE THIS A TRANSITION GROUP
                     <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
                         <div className={classes.stepInfo}>
                             <h2>Add Step</h2>
+                            <span onClick={toggleAddStep}>&times;</span>
                         </div>
                         <form onSubmit={handleAddStep} className={classes.stepForm}>
                             <div className={classes.stepSegment}>
@@ -425,7 +457,7 @@ function ProjectView(props) {
                             </div>
                             <button type="submit" >Create</button>
                         </form>
-                        <span onClick={toggleAddStep}>x</span>
+                        
                     </div>
                 )}
 

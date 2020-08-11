@@ -54,11 +54,12 @@ router.get("/:id/steps/", auth, async (req, res) => {
 
 router.post("/:id/steps/create", auth, async (req, res) => {
   try {
-    const { name, duration, projectId, userId } = req.body
+    const { name, duration, projectId, userId, isCompleted } = req.body
     console.log([name, duration, projectId, userId])
     const newStep = new Step({
       name,
       duration,
+      isCompleted,
       userId,
       projectId
     })

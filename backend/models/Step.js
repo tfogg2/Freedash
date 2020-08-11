@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const StepSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   projectId: { type: String, required: true },
+  isCompleted: { type: Boolean, required: true },
   name: { type: String },
   duration: { type: Number }
 })

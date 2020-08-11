@@ -6,6 +6,7 @@ import StateContext from '../StateContext'
 import Axios from 'axios'
 import Step from './Step'
 import clsx from 'clsx'
+import Select from 'react-select';
 
 const useStyles = createUseStyles(theme => ({
     project: {
@@ -13,7 +14,24 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 100
+        marginTop: 100,
+        "& button": {
+            alignItems: "center",
+            minWidth: "186px",
+            margin: "0px auto",
+            justifyContent: "center",
+            background: "#6767ff",
+            textDecoration: "none",
+            fontWeight: "900",
+            color: "#fff",
+            fontSize: 16,
+            cursor: "pointer",
+            height: 42,
+            padding: "0 20px",
+            borderRadius: 5,
+            boxSizing: "border-box",
+            border: "1px solid #f1f1f1"
+        }
     },
     formHolder: {
         "@media (max-width: 600px)": {
@@ -47,29 +65,88 @@ const useStyles = createUseStyles(theme => ({
     hide: {
         display: "none"
     },
-    stepForm: {
+    stepFormHolder: {
+        position: "fixed",
+        bottom: 0,
+        width: "100%",
+        background: "#6767ff",
+        alignItems: "center",
+        justifyContent: "center",
+
+    },
+    stepInfo: {
         display: "flex",
         flex: 1,
+        width: "50%",
+        margin: "0 auto",
+        color: "#fff"
+    },
+    stepForm: {
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        width: "50%",
+        margin: "0 auto",
+        "& button": {
+            background: "#6767ff",
+            color: "#fff",
+            marginTop: "20px",
+            border: "1px solid #fff"
+        },
+    },
+    stepSegment: {
+        display: "flex",
+        flexDirection: "row",
+        margin: "10px 0",
         "& input": {
             flex: 1,
             display: "flex",
             height: 40,
+            boxSizing: "border-box",
             padding: 5,
-            margin: "0 5px"
+            margin: "0 10px 0 0 ",
+            border: "0",
+            borderRadius: 5,
         },
         "& span": {
             flex: 1,
             display: "flex",
         },
-        "@media (max-width: 600px)": {
-            flexDirection: "column"
+        "& label": {
+            margin: "0 10px 0 0 ",
+            color: "#fff",
+            lineHeight: "40px",
+            justifyContent: "flex-end"
         },
-        "@media (min-width: 601px)": {
-            flexDirection: "row"
+        "& select": {
+            padding: "0 10px",
+            height: 40,
+            borderRadius: 5,
+            border: "0"
+        },
+    },
+    steps: {
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        paddingBottom: "30px",
+        "@media (max-width: 600px)": {
+            width: "80%",
+        },
+        "@media (min-width: 601px) and (max-width: 1200px) ": {
+            width: "60%",
+        },
+        "@media (min-width: 1201px)": {
+            width: "50%",
         },
     }
 
 }))
+
+const options = [
+    { value: 'true', label: 'Yes' },
+    { value: 'false', label: 'No' }
+];
 
 function ProjectView(props) {
     const { id } = useParams()
@@ -85,7 +162,8 @@ function ProjectView(props) {
         },
         newStep: {
             name: "",
-            duration: 0
+            duration: 0,
+            isCompleted: false
         },
         isStepOpen: false,
         editCount: 0,
@@ -125,7 +203,13 @@ function ProjectView(props) {
             case "clearNewStep":
                 draft.newStep.name = ""
                 draft.newStep.duration = null
+                draft.newStep.isCompleted = false
                 return
+
+            case "toggleCompleted":
+                draft.newStep.isCompleted = action.value
+                return
+
 
             case "stepName":
                 draft.newStep.name = action.value
@@ -259,7 +343,7 @@ function ProjectView(props) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
             if (response.data) {
                 console.log(response.data)
                 dispatch({ type: "setProject", value: response.data })
@@ -284,6 +368,11 @@ function ProjectView(props) {
         dispatch({ type: "toggleStep" })
     }
 
+    function handleStepCompleted(e) {
+
+        dispatch({ type: "toggleCompleted", value: e.value })
+    }
+
 
     const classes = useStyles()
     const project = state.project
@@ -298,14 +387,29 @@ function ProjectView(props) {
                 </div>
                 <div className={classes.formHolder}>
                     <form>
-                        <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
+                        <input className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
                     </form>
                 </div>
                 <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button>
-                <div className={state.isStepOpen ? clsx(classes.stepFormHolder, classes.formHolder) : clsx(classes.formHolder, classes.hide)}>
+                <div className={state.isStepOpen ? clsx(classes.stepFormHolder) : clsx(classes.formHolder, classes.hide)}>
+                    <div className={classes.stepInfo}>
+                        <h2>Add Step</h2>
+                    </div>
                     <form onSubmit={handleAddStep} className={classes.stepForm}>
-                        <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
-                        <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
+                        <div className={classes.stepSegment}>
+                            <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
+                            <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
+                        </div>
+
+                        <br />
+
+                        <div className={classes.stepSegment}>
+                            <label>Has this step been completed?</label>
+                            <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
+                                <option value={false}>No</option>
+                                <option value={true}>Yes</option>
+                            </select>
+                        </div>
                         <button type="submit" >Create</button>
                     </form>
                     <span onClick={toggleAddStep}>x</span>

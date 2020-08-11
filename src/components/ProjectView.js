@@ -392,36 +392,6 @@ function ProjectView(props) {
         dispatch({ type: "toggleCompleted", value: e.value })
     }
 
-    const AddStep = () => {
-        // MAKE THIS A TRANSITION GROUP
-        return (
-            <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
-                <div className={classes.stepInfo}>
-                    <h2>Add Step</h2>
-                </div>
-                <form onSubmit={handleAddStep} className={classes.stepForm}>
-                    <div className={classes.stepSegment}>
-                        <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
-                        <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
-                    </div>
-
-                    <br />
-
-                    <div className={classes.stepSegment}>
-                        <label>Has this step been completed?</label>
-                        <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
-                            <option value={false}>No</option>
-                            <option value={true}>Yes</option>
-                        </select>
-                    </div>
-                    <button type="submit" >Create</button>
-                </form>
-                <span onClick={toggleAddStep}>x</span>
-            </div>
-        )
-    }
-
-
     const classes = useStyles()
     const project = state.project
 
@@ -439,7 +409,32 @@ function ProjectView(props) {
                     </form>
                 </div>
 
-                {!state.isStepOpen ? <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button> : <AddStep />}
+                {!state.isStepOpen ? <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button> : (
+                    // MAKE THIS A TRANSITION GROUP
+                    <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
+                        <div className={classes.stepInfo}>
+                            <h2>Add Step</h2>
+                        </div>
+                        <form onSubmit={handleAddStep} className={classes.stepForm}>
+                            <div className={classes.stepSegment}>
+                                <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
+                                <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
+                            </div>
+
+                            <br />
+
+                            <div className={classes.stepSegment}>
+                                <label>Has this step been completed?</label>
+                                <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
+                                    <option value={false}>No</option>
+                                    <option value={true}>Yes</option>
+                                </select>
+                            </div>
+                            <button type="submit" >Create</button>
+                        </form>
+                        <span onClick={toggleAddStep}>x</span>
+                    </div>
+                )}
 
 
                 <div className={classes.steps}>

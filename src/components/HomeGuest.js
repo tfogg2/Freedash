@@ -9,7 +9,7 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    minHeight: "200vh",
+    minHeight: "80vh",
     flexDirection: "column"
   },
   homeText: {
@@ -98,10 +98,10 @@ function HomeGuest() {
         <h2>Create unlimited projects and let clients track your progress.</h2>
         <Link to="/register"><button>Get Started</button></Link>
       </div>
-      <div className={clsx(classes.homeScreen, classes.screenOne)}>One</div>
+      {/* <div className={clsx(classes.homeScreen, classes.screenOne)}>One</div>
       <div className={clsx(classes.homeScreen, classes.screenTwo)}>Two</div>
       <div className={clsx(classes.homeScreen, classes.screenThree)}>Three</div>
-      <div className={clsx(classes.homeScreen, classes.screenFour)}>Four</div>
+      <div className={clsx(classes.homeScreen, classes.screenFour)}>Four</div> */}
     </div>
   )
 }

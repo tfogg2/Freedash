@@ -12,14 +12,13 @@ const useStyles = createUseStyles(theme => ({
     project: {
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         marginTop: 100,
         "& button": {
-            alignItems: "center",
             minWidth: "186px",
-            margin: "0px auto",
             justifyContent: "center",
+            alignItems: "center",
             background: "#6767ff",
             textDecoration: "none",
             fontWeight: "900",
@@ -32,6 +31,24 @@ const useStyles = createUseStyles(theme => ({
             boxSizing: "border-box",
             border: "1px solid #f1f1f1"
         }
+    },
+    showAddStep: {
+        position: "fixed",
+        bottom: "-5px",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#6767ff",
+        textDecoration: "none",
+        fontWeight: "900",
+        color: "#fff",
+        fontSize: 16,
+        cursor: "pointer",
+        height: 42,
+        padding: "0 20px",
+        borderRadius: 5,
+        boxSizing: "border-box",
+        border: "1px solid #f1f1f1"
     },
     formHolder: {
         "@media (max-width: 600px)": {
@@ -68,6 +85,7 @@ const useStyles = createUseStyles(theme => ({
     stepFormHolder: {
         position: "fixed",
         bottom: 0,
+        transition: ".33s all ease-in-out",
         width: "100%",
         background: "#6767ff",
         alignItems: "center",
@@ -91,7 +109,8 @@ const useStyles = createUseStyles(theme => ({
             background: "#6767ff",
             color: "#fff",
             marginTop: "20px",
-            border: "1px solid #fff"
+            border: "1px solid #fff",
+
         },
     },
     stepSegment: {
@@ -373,6 +392,35 @@ function ProjectView(props) {
         dispatch({ type: "toggleCompleted", value: e.value })
     }
 
+    const AddStep = () => {
+        // MAKE THIS A TRANSITION GROUP
+        return (
+            <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
+                <div className={classes.stepInfo}>
+                    <h2>Add Step</h2>
+                </div>
+                <form onSubmit={handleAddStep} className={classes.stepForm}>
+                    <div className={classes.stepSegment}>
+                        <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
+                        <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
+                    </div>
+
+                    <br />
+
+                    <div className={classes.stepSegment}>
+                        <label>Has this step been completed?</label>
+                        <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </div>
+                    <button type="submit" >Create</button>
+                </form>
+                <span onClick={toggleAddStep}>x</span>
+            </div>
+        )
+    }
+
 
     const classes = useStyles()
     const project = state.project
@@ -390,30 +438,10 @@ function ProjectView(props) {
                         <input className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
                     </form>
                 </div>
-                <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button>
-                <div className={state.isStepOpen ? clsx(classes.stepFormHolder) : clsx(classes.formHolder, classes.hide)}>
-                    <div className={classes.stepInfo}>
-                        <h2>Add Step</h2>
-                    </div>
-                    <form onSubmit={handleAddStep} className={classes.stepForm}>
-                        <div className={classes.stepSegment}>
-                            <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
-                            <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
-                        </div>
 
-                        <br />
+                {!state.isStepOpen ? <button onClick={toggleAddStep} className={state.isStepOpen ? classes.hide : classes.showAddStep}>Add Step</button> : <AddStep />}
 
-                        <div className={classes.stepSegment}>
-                            <label>Has this step been completed?</label>
-                            <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </div>
-                        <button type="submit" >Create</button>
-                    </form>
-                    <span onClick={toggleAddStep}>x</span>
-                </div>
+
                 <div className={classes.steps}>
                     {project.steps.map(step => {
                         return (

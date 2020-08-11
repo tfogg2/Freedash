@@ -387,11 +387,6 @@ function ProjectView(props) {
         dispatch({ type: "toggleStep" })
     }
 
-    function handleStepCompleted(e) {
-
-        dispatch({ type: "toggleCompleted", value: e.value })
-    }
-
     const classes = useStyles()
     const project = state.project
 
@@ -420,9 +415,7 @@ function ProjectView(props) {
                                 <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
                                 <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
                             </div>
-
                             <br />
-
                             <div className={classes.stepSegment}>
                                 <label>Has this step been completed?</label>
                                 <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>

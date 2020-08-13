@@ -42,11 +42,12 @@ router.get("/:id/steps/", auth, async (req, res) => {
     // const user = await User.findById(req.user)
     // const userId = user.id
     const token = req.header("freedashToken")
+    const projectId = req.params.id
     console.log(token)
-
-    const { projectId } = req.body
-    const steps = await Step.find({ projectId })
+    console.log(projectId)
+    const steps = await Step.find({ projectId: projectId })
     res.json(steps)
+    console.log(steps)
   } catch (e) {
     res.status(500).json({ error: e.message })
   }
@@ -87,6 +88,31 @@ router.post("/:id/steps/create", auth, async (req, res) => {
 //     .catch(err => res.status(400).json("Error: " + err))
 // })
 
+router.post("/:id/edit/:id", auth, async (req, res) => {
+  const { projectId } = req.body
+  // Step.find({ projectId }).then(steps => {
+
+  //   steps.save()
+  // })
+  const steps = await Step.find({ projectId })
+
+  Step.findById(req.body.id).then(step => {
+    // steps.splice(steps.indexOf({ _id: req.body.id }), 1)
+    step.name = req.body.name
+    step.duration = req.body.duration
+    step.isCompleted = req.body.isCompleted
+
+    step
+      .save()
+      .then(() => {
+        res.json(step)
+        console.log(step)
+      })
+      .catch(err => res.status(400).json("Error: " + err))
+  })
+    .catch(err => res.status(400).json("Error: " + err))
+})
+
 router.get("/:id", auth, async (req, res) => {
   Project.findById(req.params.id)
     .then(project => {
@@ -119,6 +145,8 @@ router.post("/:id/edit", auth, async (req, res) => {
       }
 
       project.description = req.body.description
+
+      project.steps = req.body.steps
 
 
 

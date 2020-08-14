@@ -1,13 +1,11 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { useParams, withRouter } from 'react-router-dom'
+import React, { useEffect, useContext } from 'react'
+import { useParams } from 'react-router-dom'
 import { createUseStyles } from 'react-jss'
 import { useImmerReducer } from 'use-immer'
 import StateContext from '../StateContext'
 import Axios from 'axios'
 import Step from './Step'
 import clsx from 'clsx'
-import Select from 'react-select';
-import FontAwesome from 'react-fontawesome'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from "react-tooltip"
@@ -145,6 +143,7 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: "column",
         flex: 1,
         width: "50%",
+        paddingBottom: 20,
         margin: "0 auto",
         "& button": {
             background: "#6767ff",
@@ -188,6 +187,7 @@ const useStyles = createUseStyles(theme => ({
     steps: {
         display: "flex",
         flexDirection: "column",
+        minHeight: "300px",
         flex: 1,
         paddingBottom: "30px",
         "@media (max-width: 600px)": {
@@ -242,81 +242,7 @@ const useStyles = createUseStyles(theme => ({
             justifyContent: "flex-end",
             alignItems: "center"
         }
-    },
-    stepFormHolder: {
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        transition: ".33s all ease-in-out",
-        width: "100%",
-        background: "#6767ff",
-        alignItems: "center",
-        justifyContent: "center",
-
-    },
-    stepInfo: {
-        display: "flex",
-        flex: 1,
-        width: "50%",
-        margin: "0 auto",
-        color: "#fff",
-        "& h2": {
-            display: "flex",
-            justifyContent: "flex-start",
-            flex: 1
-        },
-        "& span": {
-            marginTop: "10px",
-            cursor: "pointer",
-            fontSize: "24px"
-        }
-    },
-    stepForm: {
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-        width: "50%",
-        margin: "0 auto",
-        "& button": {
-            background: "#6767ff",
-            color: "#fff",
-            marginTop: "20px",
-            border: "1px solid #fff",
-
-        },
-    },
-    stepSegment: {
-        display: "flex",
-        flexDirection: "row",
-        margin: "10px 0",
-        "& input": {
-            flex: 1,
-            display: "flex",
-            height: 40,
-            boxSizing: "border-box",
-            padding: 5,
-            margin: "0 10px 0 0 ",
-            border: "0",
-            borderRadius: 5,
-        },
-        "& span": {
-            flex: 1,
-            display: "flex",
-        },
-        "& label": {
-            margin: "0 10px 0 0 ",
-            color: "#fff",
-            lineHeight: "40px",
-            justifyContent: "flex-end"
-        },
-        "& select": {
-            padding: "0 10px",
-            height: 40,
-            borderRadius: 5,
-            border: "0"
-        },
-    },
-
+    }
 }))
 
 const options = [
@@ -474,13 +400,13 @@ function ProjectView(props) {
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
-        console.log(id)
+        // console.log(id)
         if (id) {
             async function fetchProject() {
                 try {
                     const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     if (response.data) {
-                        console.log(response.data)
+                        // console.log(response.data)
                         dispatch({ type: "isLoaded", value: true })
                         dispatch({ type: "setProject", value: response.data })
                     } else {
@@ -500,23 +426,14 @@ function ProjectView(props) {
         }
     }, [id])
 
-    // function toggleStepEdit(e) {
-    //     e.preventDefault()
-    //     const response = await Axios.get(`http://localhost:5000/projects/${id}/edit/${props.step._id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: props.step_id }, { headers: { "freedashToken": appState.user.token } })
-    //     dispatch({ type: "toggleEdit" })
-    // }
-
     useEffect(() => {
         async function updateProject() {
             try {
                 const project = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } })
-                console.log(project.data)
+                // console.log(project.data)
                 if (project.data) {
-
-                    // dispatch({ type: "setProject", value: project.data })
                     dispatch({ type: "setSteps", data: project.data })
                     dispatch({ type: "isLoaded", value: true })
-
                 } else {
                     console.log("There was an error getting a response from the server.")
                 }
@@ -531,60 +448,15 @@ function ProjectView(props) {
         e.preventDefault()
         try {
             const response = await Axios.post(`http://localhost:5000/projects/${id}/edit/${state.step.id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: state.step.id, projectId: id }, { headers: { "freedashToken": appState.user.token } })
-            console.log(response.data)
+            // console.log(response.data)
             dispatch({ type: "clearStateStep" })
-
-
-            // const project = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } })
-
             dispatch({ type: "toggleEdit" })
             dispatch({ type: "toggleStepUpdate" })
-            // const edit = await Axios.post(`http://localhost:5000/projects/${id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps, userId: appState.user.id }, { headers: { "freedashToken": appState.user.token } })
-            // console.log(edit.data)
-            // const projectSteps = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } }, { projectId: id })
-            // // dispatch({ type: "removeStep", value: response.data })
-
-
 
         } catch {
             console.log("There was an error.")
         }
     }
-
-    // useEffect(() => {
-    //     const ourRequest = Axios.CancelToken.source()
-    //     console.log(id)
-    //     const token = appState.user.token
-    //     console.log(state.token)
-    //     console.log(state.project.steps)
-    //     if (id) {
-    //         async function fetchSteps() {
-    //             try {
-    //                 const steps = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { projectId: id }, { headers: { "freedashToken": token } }, { cancelToken: ourRequest.token })
-    //                 if (steps.data) {
-    //                     console.log(steps.data)
-    //                     dispatch({ type: "addSteps", data: steps.data })
-    //                 } else {
-    //                     console.log("There was an error getting a response from the server.")
-    //                 }
-    //             } catch (e) {
-    //                 console.log("There was an error." + e)
-    //             }
-    //         }
-    //         fetchSteps()
-    //         return () => {
-    //             ourRequest.cancel()
-    //         }
-    //     } else {
-    //         console.log('Something went wrong.')
-    //     }
-    // }, [])
-
-
-    // useEffect(() => {
-    //     dispatch({ type: "clearNewStep" })
-    // }, [state.project.steps])
-
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
@@ -592,7 +464,7 @@ function ProjectView(props) {
             async function fetchProject() {
                 try {
                     const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-                    console.log(edit.data)
+                    // console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -613,7 +485,7 @@ function ProjectView(props) {
             async function fetchProject() {
                 try {
                     const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-                    console.log(edit.data)
+                    // console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -633,7 +505,7 @@ function ProjectView(props) {
         try {
             const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
             if (response.data) {
-                console.log(response.data)
+                // console.log(response.data)
                 dispatch({ type: "setProject", value: response.data })
                 dispatch({ type: "isLoaded", value: true })
                 dispatch({ type: "clearNewStep" })
@@ -653,7 +525,6 @@ function ProjectView(props) {
         e.preventDefault()
         dispatch({ type: "closeStepEdit" })
         dispatch({ type: "stepDuration", value: "" })
-        console.log(state.newStep.duration)
         dispatch({ type: "toggleStep" })
     }
 

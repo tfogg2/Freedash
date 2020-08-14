@@ -60,7 +60,7 @@ function HeaderLoggedOut() {
           <li>
             <NavLink to="/login">Login</NavLink>
             <NavLink to="/register">Register</NavLink>
-            <NavLink to="/about">About</NavLink>
+            {/* <NavLink to="/about">About</NavLink> */}
           </li>
         </ul>
       </div>

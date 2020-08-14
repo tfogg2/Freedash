@@ -3,6 +3,7 @@ const auth = require("../middleware/auth")
 const User = require("../models/User.js")
 let Project = require("../models/Project.js")
 let Step = require("../models/Step.js")
+const e = require("express")
 
 router.get("/", auth, async (req, res) => {
   try {
@@ -42,6 +43,50 @@ router.get("/:id/steps/", auth, async (req, res) => {
     const projectId = req.params.id
     const steps = await Step.find({ projectId: projectId })
     res.json(steps)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+router.get("/:id/steps/progress", auth, async (req, res) => {
+  try {
+
+    const projectId = req.params.id
+    const steps = await Step.find({ projectId: projectId })
+    let totalDuration = 0
+    for (i = 0; i < steps.length; i++) {
+      const step = steps[i]
+      const duration = step.duration
+      function total() {
+        totalDuration += duration
+      }
+      total()
+    }
+    res.json(totalDuration)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+router.get("/:id/steps/completed", auth, async (req, res) => {
+  try {
+
+    const projectId = req.params.id
+    const steps = await Step.find({ projectId: projectId })
+    let totalDuration = 0
+    for (i = 0; i < steps.length; i++) {
+      const step = steps[i]
+      if (step.isCompleted) {
+        const duration = step.duration
+        function total() {
+          totalDuration += duration
+        }
+        total()
+      } else {
+        totalDuration += 0
+      }
+    }
+    res.json(totalDuration)
   } catch (e) {
     res.status(500).json({ error: e.message })
   }

@@ -105,7 +105,22 @@ const useStyles = createUseStyles(theme => ({
         outline: 0,
         fontSize: 16,
         lineHeight: "26px",
-        marginBottom: 40,
+    },
+    progressBarContianer: {
+        marginBottom: 20,
+        padding: "0 5px"
+    },
+    fullBar: {
+        display: "flex",
+        height: 20,
+        borderRadius: 25,
+        border: ".5px solid #e0e0e0"
+    },
+    progressBar: {
+        transition: "width .3s ease-in-out",
+        height: 20,
+        background: "#6767ff",
+        borderRadius: 25
     },
     hide: {
         display: "none"
@@ -238,11 +253,11 @@ const useStyles = createUseStyles(theme => ({
             color: "#6767ff",
             display: "flex",
             flex: 1,
-            fontSize: "24px",
             justifyContent: "flex-end",
             alignItems: "center"
         }
     }
+
 }))
 
 const options = [
@@ -269,6 +284,7 @@ function ProjectView(props) {
         },
         isStepOpen: false,
         editCount: 0,
+        progress: 0,
         editTitleCount: 0,
         token: appState.user.token,
         id: useParams().id,
@@ -279,7 +295,8 @@ function ProjectView(props) {
             duration: 0,
             isCompleted: false
         },
-        stepUpdate: 0
+        stepUpdate: 0,
+        countCompleted: 0
     }
 
     function ourReducer(draft, action) {
@@ -352,6 +369,10 @@ function ProjectView(props) {
                 draft.stepUpdate++
                 return
 
+            case "setProgress":
+                draft.progress = action.value
+                return
+
             case "updateStep":
                 draft.step.name = action.data.name
                 draft.step.duration = action.data.duration
@@ -368,6 +389,10 @@ function ProjectView(props) {
                 draft.step.duration = action.value
                 return
 
+            case "editStepStatus":
+                draft.step.isCompleted = action.value
+                return
+
             case "setStep":
                 draft.step.name = action.value.name
                 draft.step.id = action.value._id
@@ -376,20 +401,16 @@ function ProjectView(props) {
                 draft.isStepEditing = true
                 return
 
-            case "setStep":
-                draft.step.name = ""
-                draft.step.id = ""
-                draft.step.duration = 0
-                draft.step.isCompleted = false
-                draft.isStepEditing = false
-                return
-
             case "removeStep":
                 draft.project.steps.shift(action.value)
                 return
 
             case "closeStepEdit":
                 draft.isStepEditing = false
+                return
+
+            case "countCompleted":
+                draft.countCompleted = action.value
                 return
 
 
@@ -457,6 +478,23 @@ function ProjectView(props) {
             console.log("There was an error.")
         }
     }
+
+    useEffect(() => {
+        async function progressBar() {
+            try {
+                const totalDuration = await Axios.get(`http://localhost:5000/projects/${id}/steps/progress`, { headers: { "freedashToken": appState.user.token } })
+                const completedDuration = await Axios.get(`http://localhost:5000/projects/${id}/steps/completed`, { headers: { "freedashToken": appState.user.token } })
+                dispatch({ type: "countCompleted", value: completedDuration.data })
+                const progress = ((completedDuration.data / totalDuration.data) * 100)
+                const width = "width: " + progress + "%"
+                console.log(width)
+                dispatch({ type: "setProgress", value: progress })
+            } catch {
+                console.log("There was an error.")
+            }
+        }
+        progressBar()
+    }, [state.project.steps])
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
@@ -530,6 +568,7 @@ function ProjectView(props) {
 
     const classes = useStyles()
     const project = state.project
+    const percentage = state.progress + "%"
 
     if (state.project.isLoaded) {
         return (
@@ -545,6 +584,26 @@ function ProjectView(props) {
                             <input className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
                         </form>
                     </div>
+                    <div className={classes.progressBarContianer}>
+                        <span className={classes.fullBar}>
+                            <span className={classes.progressBar} style={{ width: percentage }}></span>
+                        </span>
+                    </div>
+                    {/* {state.countCompleted > 0 ? (
+                        <div className={classes.progressBarContianer}>
+                            <span className={classes.fullBar}>
+                                <span className={classes.progressBar} style={{ width: percentage }}></span>
+                            </span>
+                        </div>
+                    ) : (
+                            <div className={classes.progressBarContianer}>
+                                <span className={classes.fullBar}>
+                                    <span className={clsx(classes.emptyProgressBar, classes.progressBar)} ></span>
+                                </span>
+                            </div>
+                        )
+                    } */}
+
 
                     {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.showAddStep)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.showAddStep)}>Close</button>}
                 </div>
@@ -585,10 +644,10 @@ function ProjectView(props) {
                                 <div className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
                                     <div className={classes.stepBody}>
                                         <h3>{step.name}</h3>
-
                                     </div>
+
                                     <div className={classes.stepDuration}>
-                                        <p>{step.duration} minutes</p>
+                                        <p>{step.duration ? step.duration + " minutes" : <></>}</p>
                                     </div>
                                     <div className={classes.stepSpan}>
                                         <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />{" "}
@@ -613,9 +672,9 @@ function ProjectView(props) {
                                             <br />
                                             <div className={classes.stepSegment}>
                                                 <label>Has this step been completed?</label>
-                                                <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
-                                                    <option value={false} selected={state.step.isCompleted == false}>No</option>
-                                                    <option value={true} selected={state.step.isCompleted == true}>Yes</option>
+                                                <select onChange={e => dispatch({ type: "editStepStatus", value: e.target.value })}>
+                                                    <option value={false} selected={state.step.isCompleted == false ? true : false}>No</option>
+                                                    <option value={true} selected={state.step.isCompleted == true ? true : false}>Yes</option>
                                                 </select>
                                             </div>
                                             <button type="submit" >Update</button>

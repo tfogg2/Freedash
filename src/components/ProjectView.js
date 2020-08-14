@@ -90,6 +90,9 @@ const useStyles = createUseStyles(theme => ({
         boxSizing: "border-box",
         marginBottom: "40px"
     },
+    deleteProject: {
+        float: "right",
+    },
     projectTitle: {
         background: "#fff",
         border: "none",
@@ -401,6 +404,14 @@ function ProjectView(props) {
                 draft.isStepEditing = true
                 return
 
+            case "emptyStep":
+                draft.step.name = ""
+                draft.step.id = ""
+                draft.step.duration = 0
+                draft.step.isCompleted = false
+                draft.isStepEditing = false
+                return
+
             case "removeStep":
                 draft.project.steps.shift(action.value)
                 return
@@ -537,6 +548,35 @@ function ProjectView(props) {
         }
     }, [state.project.description])
 
+    async function handleStepDelete(e) {
+        e.preventDefault()
+        try {
+            var result = window.confirm("Are you sure?")
+            if (result == true) {
+                const deleteStep = await Axios.delete(`http://localhost:5000/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
+                dispatch({ type: "emptyStep" })
+                dispatch({ type: "toggleStepUpdate" })
+                console.log(deleteStep.data)
+            }
+        } catch {
+            console.log("There was an error.")
+        }
+    }
+
+    async function handleProjectDelete(e) {
+        e.preventDefault()
+        try {
+            var result = window.confirm("Are you sure you want to delete this project?")
+            if (result == true) {
+                const deleteProject = await Axios.delete(`http://localhost:5000/projects/${id}/`, { headers: { "freedashToken": appState.user.token } })
+                props.history.push("/")
+                console.log(deleteProject.data)
+            }
+        } catch {
+            console.log("There was an error.")
+        }
+    }
+
     async function handleAddStep(e) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
@@ -574,6 +614,7 @@ function ProjectView(props) {
         return (
             <div className={classes.project}>
                 <div className={classes.porjectInfo}>
+                    <span className={classes.deleteProject} onClick={handleProjectDelete}>&times;</span>
                     <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
                         <form>
                             <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
@@ -662,6 +703,7 @@ function ProjectView(props) {
                                     <div className={classes.stepFormHolder}>
                                         <div className={classes.stepInfo}>
                                             <h2>Edit Step</h2>
+                                            <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
                                             <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
                                         </div>
                                         <form onSubmit={handleStepEdit} className={classes.stepForm}>

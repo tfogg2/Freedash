@@ -160,6 +160,17 @@ router.delete("/:id", auth, async (req, res) => {
   res.json(deletedProject)
 })
 
+router.delete("/:id/steps/:id", auth, async (req, res) => {
+  const step = await Step.findOne({ _id: req.params.id })
+  if (!step)
+    return res.status(400).json({
+      msg: "No step found with this ID that belongs to the currently logged in user."
+    })
+
+  const deletedStep = await Step.findByIdAndDelete(req.params.id)
+  res.json(deletedStep)
+})
+
 router.post("/:id/edit", auth, async (req, res) => {
 
   Project.findById(req.params.id)

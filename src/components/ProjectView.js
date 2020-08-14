@@ -143,18 +143,29 @@ const useStyles = createUseStyles(theme => ({
         display: "flex",
         flex: 1,
         width: "50%",
+        height: "100px",
         margin: "0 auto",
         color: "#fff",
+        flexDirection: "column",
         "& h2": {
             display: "flex",
             justifyContent: "flex-start",
-            flex: 1
+            flex: 1,
+            marginBottom: 5
         },
         "& span": {
             marginTop: "10px",
+            position: "absolute",
+            right: "25%",
             cursor: "pointer",
-            fontSize: "24px"
+            fontSize: "24px",
+            float: "right"
         }
+    },
+    deleteStep: {
+        display: "flex",
+        margin: 0,
+        flex: 1,
     },
     stepForm: {
         display: "flex",
@@ -702,9 +713,10 @@ function ProjectView(props) {
 
                                     <div className={classes.stepFormHolder}>
                                         <div className={classes.stepInfo}>
+                                            <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
                                             <h2>Edit Step</h2>
                                             <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
-                                            <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
+
                                         </div>
                                         <form onSubmit={handleStepEdit} className={classes.stepForm}>
                                             <div className={classes.stepSegment}>

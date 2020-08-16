@@ -132,6 +132,7 @@ const useStyles = createUseStyles(theme => ({
     },
     stepFormHolder: {
         position: "fixed",
+        zIndex: 2000,
         bottom: 0,
         left: 0,
         transition: ".33s all ease-in-out",
@@ -449,6 +450,7 @@ function ProjectView(props) {
                         // console.log(response.data)
                         dispatch({ type: "isLoaded", value: true })
                         dispatch({ type: "setProject", value: response.data })
+                        dispatch({ type: "toggleStepUpdate" })
                     } else {
                         console.log("There was an error getting a response from the server.")
                     }
@@ -704,13 +706,13 @@ function ProjectView(props) {
                                                 </>
                                             ) : <span className={classes.incomplete} data-tip="Completed"></span>}
                                         </div> */}
-                                       
+
                                     </div>
 
                                     <div className={classes.stepDuration}>
                                         <p>{step.duration ? step.duration + " minutes" : <></>}</p>
                                     </div>
-                                  
+
                                     {/* <div className={classes.stepSpan}>
                                         <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
                                     </div> */}

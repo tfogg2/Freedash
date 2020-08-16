@@ -13,7 +13,15 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     listStyleType: "none",
     width: "100%",
+    border: ".5px solid #f3f3f3",
+    minHeight: "100vh",
     padding: "0 0px"
+  },
+  noProjectsHeader: {
+    width: "50%",
+    fontSize: "72px",
+    margin: "40px auto",
+    color: "#6767ff"
   }
 }))
 
@@ -48,11 +56,8 @@ function Projects() {
   const projects = appState.projects
   return (
     <ul className={classes.projectList}>
-      {projects.map(project => {
-        return (
-          <Project project={project} />
-        )
-      }).reverse()}
+      {projects.length > 0 ? projects.map(project => { return <Project project={project} /> }).reverse() : <h1 className={classes.noProjectsHeader}>Create your first project to get started!</h1>}
+
     </ul>
   )
 }

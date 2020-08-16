@@ -8,7 +8,11 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     flexDirection: "column",
     background: "#fff",
-    borderBottom: "1px solid #e8e8e8",
+    minHeight: "90px",
+    boxSizing: "border-box",
+    overflow: "hidden",
+    justifyContent: "center",
+    borderBottom: ".5px solid #f3f3f3",
     padding: "10px 20px",
     minWidth: 300,
     '&:hover': {

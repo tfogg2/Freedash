@@ -70,9 +70,14 @@ const useStyles = createUseStyles(theme => ({
         "& input": {
             background: "#fff",
             padding: "10px",
-            // boxShadow: "inset 0 1px 1px rgba(0,0,0,0.03),  inset 0 2px 2px rgba(0,0,0,0.03), inset 0 3px 3px rgba(0,0,0,0.03), inset 0 4px 5px rgba(0,0,0,0.03), inset 0 6px 12px rgba(0,0,0,0.03) ",
             borderRadius: "5px"
-        }
+        },
+        "& textarea": {
+            background: "#fff",
+            padding: "10px",
+            borderRadius: "5px"
+        },
+
     },
     porjectInfo: {
         boxShadow: "0 1px 1px rgba(0,0,0,0.03),  0 2px 2px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 6px 8px rgba(0,0,0,0.03), 0 8px 16px rgba(0,0,0,0.03) ",
@@ -108,7 +113,9 @@ const useStyles = createUseStyles(theme => ({
         border: "none",
         width: "100%",
         outline: 0,
+        resize: "none",
         fontSize: 16,
+        height: "100%",
         lineHeight: "26px",
     },
     progressBarContianer: {
@@ -308,7 +315,8 @@ function ProjectView(props) {
             isCompleted: false
         },
         stepUpdate: 0,
-        countCompleted: 0
+        countCompleted: 0,
+        textareaHeight: 40
     }
 
     function ourReducer(draft, action) {
@@ -431,6 +439,10 @@ function ProjectView(props) {
 
             case "countCompleted":
                 draft.countCompleted = action.value
+                return
+
+            case "checkHeight":
+                draft.textareaHeight = action.value
                 return
 
 
@@ -619,6 +631,7 @@ function ProjectView(props) {
     const classes = useStyles()
     const project = state.project
     const percentage = state.progress + "%"
+    const textHeight = state.textareaHeight + "px"
 
     if (state.project.isLoaded) {
         return (
@@ -632,7 +645,7 @@ function ProjectView(props) {
                     </div>
                     <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
                         <form>
-                            <input className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
+                            <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value }, { type: "checkHeight", value: e.target.scrollHeight })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} style={{ height: textHeight }} />
                         </form>
                     </div>
                     <div className={classes.progressBarContianer}>

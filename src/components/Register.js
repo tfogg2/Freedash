@@ -8,11 +8,17 @@ import { createUseStyles } from "react-jss"
 import StateContext from "../StateContext"
 
 const useStyles = createUseStyles(theme => ({
+  defaultPage: {
+    display: "flex",
+    flexDirection: "column"
+  },
   defaultFormPage: {
     display: "flex",
-    background: "#6767ff",
-    padding: "100px 0",
-    flexDirection: "row"
+    background: "#F7F9FA",
+    paddingTop: 80,
+    padding: "0",
+    flexDirection: "row",
+    height: "100vh"
   },
   defaultForm: {
     display: "flex",
@@ -20,7 +26,7 @@ const useStyles = createUseStyles(theme => ({
     background: "#f9f9f9",
     borderRadius: 10,
     padding: 50,
-    alignItems: "center",
+    height: "fit-content",
     justifyContent: "center",
     flexDirection: "row"
   },
@@ -58,10 +64,11 @@ const useStyles = createUseStyles(theme => ({
   },
   formControlHolder: {
     margin: "10px 0",
-    display: "block",
+    display: "flex",
+    flex: 1,
     "& input": {
       height: "40px",
-      width: "100%",
+      display: "flex",
       textAlign: "center",
       background: "#fff",
       fontSize: 14,
@@ -73,8 +80,6 @@ const useStyles = createUseStyles(theme => ({
       height: "40px",
       display: "flex",
       alignItems: "center",
-      margin: "0 auto",
-      textAlign: "center",
       justifyContent: "center",
       background: "#6767ff",
       color: "#fff",
@@ -84,10 +89,6 @@ const useStyles = createUseStyles(theme => ({
       boxSizing: "border-box",
       border: "1px solid #f1f1f1"
     }
-  },
-  defaultFormAlert: {
-    color: "#FF8680",
-    marginTop: 10
   }
 }))
 
@@ -308,48 +309,42 @@ function Register(props) {
     dispatch({ type: "submitForm" })
   }
   return (
-    <div className={classes.defaultFormPage}>
-      <div className={classes.defaultSideBar}></div>
-      <form onSubmit={handleFormSubmit} className={classes.defaultForm}>
-        <div className={classes.defaultFormHolder}>
-          <div className={classes.defaultFormTitle}>
-            <h2>
-              Register for <span>FreeDash</span>
-            </h2>
+    <div className={classes.defaultPage}>
+      <div className={classes.defaultFormPage}>
+        <div className={classes.defaultSideBar}></div>
+        <form onSubmit={handleFormSubmit} className={classes.defaultForm}>
+          <div className={classes.defaultFormHolder}>
+            <div className={classes.defaultFormTitle}>
+              <h2>
+                Register for <span>FreeDash</span>
+              </h2>
+              <p>Freedash is a <span>completely free</span> product made for freelance developers. Enjoy!</p>
+            </div>
+            <div className={classes.formControlHolder}>
+              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" type="text" placeholder="you@example.com" autoComplete="off" />
+              <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className={classes.defaultFormAlert}>{state.email.message}</div>
+              </CSSTransition>
+            </div>
+            <div className={classes.formControlHolder}>
+              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" type="password" placeholder="Create a password" />
+              <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className={classes.defaultFormAlert}>{state.password.message}</div>
+              </CSSTransition>
+            </div>
+            <div className={classes.formControlHolder}>
+              <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" type="password" placeholder="Confirm password" />
+              <CSSTransition in={state.passwordCheck.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
+                <div className={classes.defaultFormAlert}>{state.passwordCheck.message}</div>
+              </CSSTransition>
+            </div>
+            <div className={classes.formControlHolder}>
+              <button type="submit">Register for Freedash</button>
+            </div>
           </div>
-          {/* <div>
-            <label htmlFor="username-register">
-              <small>Username</small>
-            </label>
-              <input onChange={e => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
-            <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
-            </CSSTransition> 
-          </div> */}
-          <div className={classes.formControlHolder}>
-            <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" type="text" placeholder="you@example.com" autoComplete="off" />
-            <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className={classes.defaultFormAlert}>{state.email.message}</div>
-            </CSSTransition>
-          </div>
-          <div className={classes.formControlHolder}>
-            <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" type="password" placeholder="Create a password" />
-            <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className={classes.defaultFormAlert}>{state.password.message}</div>
-            </CSSTransition>
-          </div>
-          <div className={classes.formControlHolder}>
-            <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" type="password" placeholder="Confirm password" />
-            <CSSTransition in={state.passwordCheck.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-              <div className={classes.defaultFormAlert}>{state.passwordCheck.message}</div>
-            </CSSTransition>
-          </div>
-          <div className={classes.formControlHolder}>
-            <button type="submit">Register for Freedash</button>
-          </div>
-        </div>
-      </form>
-      <div className={classes.defaultSideBar}></div>
+        </form>
+        <div className={classes.defaultSideBar}></div>
+      </div>
     </div>
   )
 }

@@ -92,6 +92,8 @@ const useStyles = createUseStyles(theme => ({
     },
     deleteProject: {
         float: "right",
+        color: "#ff2828",
+        cursor: "pointer"
     },
     projectTitle: {
         background: "#fff",
@@ -110,14 +112,14 @@ const useStyles = createUseStyles(theme => ({
         lineHeight: "26px",
     },
     progressBarContianer: {
-        marginBottom: 20,
+        margin: "40px auto 60px auto",
         padding: "0 5px"
     },
     fullBar: {
         display: "flex",
         height: 20,
         borderRadius: 25,
-        border: ".5px solid #e0e0e0"
+        border: ".5px solid #f3f3f3"
     },
     progressBar: {
         transition: "width .3s ease-in-out",
@@ -150,8 +152,7 @@ const useStyles = createUseStyles(theme => ({
         "& h2": {
             display: "flex",
             justifyContent: "flex-start",
-            flex: 1,
-            marginBottom: 5
+            marginBottom: 10
         },
         "& span": {
             marginTop: "10px",
@@ -164,8 +165,9 @@ const useStyles = createUseStyles(theme => ({
     },
     deleteStep: {
         display: "flex",
+        color: "#ffffff73",
+        cursor: "pointer",
         margin: 0,
-        flex: 1,
     },
     stepForm: {
         display: "flex",
@@ -232,6 +234,7 @@ const useStyles = createUseStyles(theme => ({
     step: {
         borderBottom: "1px solid #e0e0e0",
         display: "flex",
+        cursor: "pointer",
         flexDirection: "row",
         "& span": {
             fontSize: "20px"
@@ -240,19 +243,17 @@ const useStyles = createUseStyles(theme => ({
     stepBody: {
         display: "flex",
         flexDirection: "column",
-        flex: 8
+        flex: 8,
+        "& h3": {
+            display: "inline-block",
+            lineHeight: "24px"
+        }
     },
     stepDuration: {
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
         flex: 2
-    },
-    stepSpan: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        flex: 1
     },
     editSpan: {
         color: "#6767ff",
@@ -263,15 +264,11 @@ const useStyles = createUseStyles(theme => ({
         opacity: 0
     },
     stepCompleted: {
+        opacity: ".3",
         "& span": {
-            color: "#6767ff",
-            display: "flex",
-            flex: 1,
-            justifyContent: "flex-end",
-            alignItems: "center"
+            color: "#6767ff"
         }
-    }
-
+    },
 }))
 
 const options = [
@@ -516,7 +513,7 @@ function ProjectView(props) {
             }
         }
         progressBar()
-    }, [state.project.steps])
+    }, [state.project])
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
@@ -693,21 +690,30 @@ function ProjectView(props) {
                         return (
                             // <Step step={step} />
                             <div>
-                                <div className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
+                                <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                <div onClick={e => { dispatch({ type: "setStep", value: step }) }} className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
                                     <div className={classes.stepBody}>
-                                        <h3>{step.name}</h3>
+                                        <h3>
+                                            {step.name}
+                                        </h3>
+                                        {/* <div className={classes.stepSpan}>   
+                                            {step.isCompleted ? (
+                                                <>
+                                                    <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                                    <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
+                                                </>
+                                            ) : <span className={classes.incomplete} data-tip="Completed"></span>}
+                                        </div> */}
+                                       
                                     </div>
 
                                     <div className={classes.stepDuration}>
                                         <p>{step.duration ? step.duration + " minutes" : <></>}</p>
                                     </div>
-                                    <div className={classes.stepSpan}>
-                                        <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />{" "}
-                                        {step.isCompleted ? <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span> : <span className={classes.incomplete} data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>}
-                                    </div>
-                                    <div className={classes.stepSpan}>
+                                  
+                                    {/* <div className={classes.stepSpan}>
                                         <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 {state.isStepEditing && (
 

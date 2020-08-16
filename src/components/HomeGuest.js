@@ -9,7 +9,8 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    minHeight: "80vh",
+    height: "70vh",
+    paddingTop: "50px",
     flexDirection: "column"
   },
   homeText: {
@@ -39,7 +40,8 @@ const useStyles = createUseStyles(theme => ({
       display: theme.layout.default.display,
       fontSize: 25,
       lineHeight: "32px",
-      width: "50%",
+      opacity: ".6",
+      width: "80%",
       margin: "40px 0",
       flex: 0,
     },

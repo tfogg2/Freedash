@@ -8,7 +8,7 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    minHeight: "100px",
+    minHeight: "75px",
 
   }
 }))

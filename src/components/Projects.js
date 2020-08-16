@@ -18,10 +18,13 @@ const useStyles = createUseStyles(theme => ({
     padding: "0 0px"
   },
   noProjectsHeader: {
-    width: "50%",
-    fontSize: "72px",
+    width: "80%",
+    fontSize: "36px",
     margin: "40px auto",
-    color: "#6767ff"
+    fontWeight: "600",
+    opacity: ".3",
+    color: "#6767ff",
+    lineHeight: "42px",
   }
 }))
 
@@ -56,7 +59,7 @@ function Projects() {
   const projects = appState.projects
   return (
     <ul className={classes.projectList}>
-      {projects.length > 0 ? projects.map(project => { return <Project project={project} /> }).reverse() : <h1 className={classes.noProjectsHeader}>Create your first project to get started!</h1>}
+      {projects.length > 0 ? projects.map(project => { return <Project project={project} /> }).reverse() : <h1 className={classes.noProjectsHeader}>This is your personal dashboard. Create your first project to get started!</h1>}
 
     </ul>
   )

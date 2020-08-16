@@ -745,7 +745,7 @@ function ProjectView(props) {
                                 )}
                             </div>
                         )
-                    }).reverse()}
+                    })}
                 </div>
             </div>
         )

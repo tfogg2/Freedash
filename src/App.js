@@ -88,15 +88,7 @@ function App(props) {
       localStorage.removeItem("freedashEmail")
       localStorage.removeItem("freedashDisplayName")
     }
-  }, [state.loggedIn])
-
-  useEffect(() => {
-    if (state.loggedIn) {
-      localStorage.setItem("freedashId", state.user.id)
-    } else {
-      localStorage.removeItem("freedashId")
-    }
-  }, [state.user.id])
+  }, [state.loggedIn, state.user])
 
   //check if token has expired on first render
 
@@ -123,31 +115,6 @@ function App(props) {
       return () => ourRequest.cancel()
     }
   }, [])
-
-  useEffect(() => {
-    if (state.loggedIn) {
-      const ourRequest = Axios.CancelToken.source()
-      async function fetchResults() {
-        try {
-          const token = state.user.token
-          const responseToken = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { freedashToken: token } })
-          if (responseToken.data) {
-            const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
-            if (!response.data) {
-              dispatch({ type: "logout" })
-              props.history.push("")
-              dispatch({ type: "flashMessage", value: "Your session has expired. Please login again." })
-            }
-          }
-        } catch (e) {
-          console.log("There was a problem or the request was canceled")
-        }
-      }
-      fetchResults()
-
-      return () => ourRequest.cancel()
-    }
-  }, [state.tokenCheck])
 
   useEffect(() => {
     const checkLoggedIn = async () => {

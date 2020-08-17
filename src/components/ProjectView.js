@@ -453,9 +453,8 @@ function ProjectView(props) {
     const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
     useEffect(() => {
-        const ourRequest = Axios.CancelToken.source()
-        // console.log(id)
         if (id) {
+            const ourRequest = Axios.CancelToken.source()
             async function fetchProject() {
                 try {
                     const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
@@ -479,7 +478,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [id])
+    }, [id, state.id])
 
     useEffect(() => {
         async function updateProject() {
@@ -497,7 +496,7 @@ function ProjectView(props) {
             }
         }
         updateProject()
-    }, [state.stepUpdate])
+    }, [state.stepUpdate, appState.user])
 
     async function handleStepEdit(e) {
         e.preventDefault()
@@ -529,7 +528,7 @@ function ProjectView(props) {
             }
         }
         progressBar()
-    }, [state.project])
+    }, [state.project, appState.user])
 
     useEffect(() => {
         const ourRequest = Axios.CancelToken.source()
@@ -549,7 +548,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.project.title])
+    }, [state.project.title, appState.user])
 
 
     useEffect(() => {
@@ -570,7 +569,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.project.description])
+    }, [state.project.description, appState.user])
 
 
 

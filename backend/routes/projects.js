@@ -37,6 +37,15 @@ router.post("/create", auth, async (req, res) => {
 
 })
 
+router.post("/:id/share", auth, async (req, res) => {
+  try {
+    const urlToken = jwt.sign({ id: req._id }, process.env.JWT_SECRET, { expiresIn: tokenLasts })
+    res.json(urlToken)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
 router.get("/:id/steps/", auth, async (req, res) => {
   try {
     const token = req.header("freedashToken")

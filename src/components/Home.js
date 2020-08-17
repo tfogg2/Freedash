@@ -14,7 +14,9 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: theme.layout.default.justifyContent,
     flexDirection: "row",
     flex: 1,
-    "@media ( min-width: 550px )": {}
+    "@media ( max-width: 550px )": {
+      flexDirection: "column",
+    }
   },
   homeLeft: {
     display: "flex",
@@ -46,6 +48,7 @@ const useStyles = createUseStyles(theme => ({
       border: "1px solid #f1f1f1"
     }
   },
+
 
   homeDash: {
     display: theme.layout.default.display,
@@ -107,6 +110,7 @@ function Home(props) {
         {/* <div className={classes.homeDashNav}>
           <h2>Projects</h2>
         </div> */}
+
         <Projects />
       </div>
       <div className={classes.homeAction}>

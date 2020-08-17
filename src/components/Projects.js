@@ -10,11 +10,9 @@ const useStyles = createUseStyles(theme => ({
   projectList: {
     display: "flex",
     flexDirection: "column",
-    flex: 3,
     listStyleType: "none",
     border: ".5px solid #f7f7f7",
-    minHeight: "100vh",
-    maxWidth: "50vw",
+    width: "100%",
     padding: "0 0px"
   },
   noProjectsHeader: {

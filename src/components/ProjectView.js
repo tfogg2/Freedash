@@ -11,6 +11,7 @@ import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-s
 import TextareaAutosize from 'react-textarea-autosize'
 import ReactTooltip from "react-tooltip"
 import DispatchContext from '../DispatchContext'
+import PageNotFound from './PageNotFound'
 
 const useStyles = createUseStyles(theme => ({
     project: {
@@ -296,6 +297,7 @@ function ProjectView(props) {
             title: "",
             description: "",
             steps: [],
+            userId: "",
             isLoaded: false
         },
         newStep: {
@@ -326,6 +328,7 @@ function ProjectView(props) {
                 draft.project.title = action.value.title
                 draft.project.description = action.value.description
                 draft.project.steps = action.value.steps
+                draft.project.userId = action.value.userId
                 draft.project.isLoaded = true
                 return
             case "editTitle":
@@ -604,7 +607,7 @@ function ProjectView(props) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: state.project.userId, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
             if (response.data) {
                 // console.log(response.data)
                 dispatch({ type: "setProject", value: response.data })
@@ -623,6 +626,12 @@ function ProjectView(props) {
         }
     }
 
+    async function toggleShare(e) {
+        e.preventDefault()
+        const response = await Axios.post(`http://localhost:5000/projects/${state.id}/share`, { headers: { "freedashToken": appState.user.token } })
+        console.log(response.data)
+    }
+
 
     function toggleAddStep(e) {
         e.preventDefault()
@@ -635,7 +644,7 @@ function ProjectView(props) {
     const project = state.project
     const percentage = state.progress + "%"
 
-
+    // if (appState.user.id == project.userId) {
     if (state.project.isLoaded) {
         return (
             <div className={classes.project}>
@@ -656,22 +665,7 @@ function ProjectView(props) {
                             <span className={classes.progressBar} style={{ width: percentage }}></span>
                         </span>
                     </div>
-                    {/* {state.countCompleted > 0 ? (
-                        <div className={classes.progressBarContianer}>
-                            <span className={classes.fullBar}>
-                                <span className={classes.progressBar} style={{ width: percentage }}></span>
-                            </span>
-                        </div>
-                    ) : (
-                            <div className={classes.progressBarContianer}>
-                                <span className={classes.fullBar}>
-                                    <span className={clsx(classes.emptyProgressBar, classes.progressBar)} ></span>
-                                </span>
-                            </div>
-                        )
-                    } */}
-
-
+                    {/* <button onClick={toggleShare}>Share</button> */}
                     {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.showAddStep)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.showAddStep)}>Close</button>}
                 </div>
 
@@ -715,13 +709,13 @@ function ProjectView(props) {
                                             {step.name}
                                         </h3>
                                         {/* <div className={classes.stepSpan}>   
-                                            {step.isCompleted ? (
-                                                <>
-                                                    <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
-                                                    <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
-                                                </>
-                                            ) : <span className={classes.incomplete} data-tip="Completed"></span>}
-                                        </div> */}
+                                                {step.isCompleted ? (
+                                                    <>
+                                                        <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                                        <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
+                                                    </>
+                                                ) : <span className={classes.incomplete} data-tip="Completed"></span>}
+                                            </div> */}
 
                                     </div>
 
@@ -730,17 +724,15 @@ function ProjectView(props) {
                                     </div>
 
                                     {/* <div className={classes.stepSpan}>
-                                        <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
-                                    </div> */}
+                                            <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
+                                        </div> */}
                                 </div>
                                 {state.isStepEditing && (
-
                                     <div className={classes.stepFormHolder}>
                                         <div className={classes.stepInfo}>
                                             <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
                                             <h2>Edit Step</h2>
                                             <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
-
                                         </div>
                                         <form onSubmit={handleStepEdit} className={classes.stepForm}>
                                             <div className={classes.stepSegment}>
@@ -757,9 +749,7 @@ function ProjectView(props) {
                                             </div>
                                             <button type="submit" >Update</button>
                                         </form>
-
                                     </div>
-
                                 )}
                             </div>
                         )
@@ -786,6 +776,13 @@ function ProjectView(props) {
             </div>
         )
     }
+    // } else {
+    //     return (
+    //         <PageNotFound />
+    //     )
+    // }
+
+
 
 
 

@@ -41,11 +41,14 @@ function App(props) {
 
       case "logout":
         draft.loggedIn = false
+        draft.user.token = ""
+        draft.user.id = ""
+        draft.user.displayName = ""
         return
 
       case "register":
-        draft.loggedIn = true
         draft.user = action.data
+        draft.loggedIn = true
         return
 
       case "setId":

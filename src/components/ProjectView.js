@@ -8,6 +8,7 @@ import Step from './Step'
 import clsx from 'clsx'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
+import TextareaAutosize from 'react-textarea-autosize'
 import ReactTooltip from "react-tooltip"
 
 const useStyles = createUseStyles(theme => ({
@@ -315,8 +316,7 @@ function ProjectView(props) {
             isCompleted: false
         },
         stepUpdate: 0,
-        countCompleted: 0,
-        textareaHeight: 40
+        countCompleted: 0
     }
 
     function ourReducer(draft, action) {
@@ -441,9 +441,6 @@ function ProjectView(props) {
                 draft.countCompleted = action.value
                 return
 
-            case "checkHeight":
-                draft.textareaHeight = action.value
-                return
 
 
         }
@@ -570,6 +567,8 @@ function ProjectView(props) {
         }
     }, [state.project.description])
 
+
+
     async function handleStepDelete(e) {
         e.preventDefault()
         try {
@@ -621,6 +620,7 @@ function ProjectView(props) {
         }
     }
 
+
     function toggleAddStep(e) {
         e.preventDefault()
         dispatch({ type: "closeStepEdit" })
@@ -631,7 +631,7 @@ function ProjectView(props) {
     const classes = useStyles()
     const project = state.project
     const percentage = state.progress + "%"
-    const textHeight = state.textareaHeight + "px"
+
 
     if (state.project.isLoaded) {
         return (
@@ -645,7 +645,7 @@ function ProjectView(props) {
                     </div>
                     <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
                         <form>
-                            <textarea className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value }, { type: "checkHeight", value: e.target.scrollHeight })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} style={{ height: textHeight }} />
+                            <TextareaAutosize className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
                         </form>
                     </div>
                     <div className={classes.progressBarContianer}>

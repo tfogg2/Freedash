@@ -13,6 +13,7 @@ const useStyles = createUseStyles(theme => ({
     alignItems: "start",
     justifyContent: theme.layout.default.justifyContent,
     flexDirection: "row",
+    flex: 1,
     "@media ( min-width: 550px )": {}
   },
   homeLeft: {
@@ -48,9 +49,8 @@ const useStyles = createUseStyles(theme => ({
 
   homeDash: {
     display: theme.layout.default.display,
-    flex: 4,
+    flex: 3,
     flexDirection: "column",
-    width: "100%",
     marginBottom: theme.layout.default.marginBottom,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
@@ -87,15 +87,15 @@ function Home(props) {
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "createProject", data: response.data })
-
+        appDispatch({ type: "flashMessage", value: "You've successfully created a new project!" })
         props.history.push(`/projects/${response.data._id}`)
       } else {
-        appDispatch({ type: "flashMessage", value: "" })
+        console.log("There was an error.")
       }
 
 
     } catch (e) {
-      console.log("There was a problem!" + e)
+      console.log("There was a problem:" + e)
     }
   }
 

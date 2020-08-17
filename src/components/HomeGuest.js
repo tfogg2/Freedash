@@ -41,7 +41,7 @@ const useStyles = createUseStyles(theme => ({
       display: theme.layout.default.display,
       fontSize: 25,
       lineHeight: "32px",
-      opacity: ".6",
+      opacity: ".8",
       width: "80%",
       margin: "40px 0",
       flex: 0,

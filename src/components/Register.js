@@ -65,14 +65,15 @@ const useStyles = createUseStyles(theme => ({
   formControlHolder: {
     margin: "10px 0",
     display: "flex",
+    height: "60px",
     flex: 1,
+    flexDirection: "column",
     "& input": {
       height: "40px",
       display: "flex",
       textAlign: "center",
       background: "#fff",
       fontSize: 14,
-      flex: 1,
       borderRadius: 5,
       border: "1px solid #f1f1f1"
     },
@@ -84,11 +85,18 @@ const useStyles = createUseStyles(theme => ({
       background: "#6767ff",
       color: "#fff",
       fontSize: 18,
-      flex: 2,
       borderRadius: 5,
       boxSizing: "border-box",
       border: "1px solid #f1f1f1"
     }
+  },
+  defaultFormAlert: {
+    color: "red",
+    position: "relative",
+    top: "0px",
+    height: "20px",
+    textAlign: "center",
+    paddingBottom: "5px"
   }
 }))
 
@@ -321,22 +329,24 @@ function Register(props) {
               <p>Freedash is a <span>completely free</span> product made for freelance developers. Enjoy!</p>
             </div>
             <div className={classes.formControlHolder}>
-              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" type="text" placeholder="you@example.com" autoComplete="off" />
               <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className={classes.defaultFormAlert}>{state.email.message}</div>
               </CSSTransition>
+              <input onChange={e => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" type="text" placeholder="you@example.com" autoComplete="off" />
+
             </div>
             <div className={classes.formControlHolder}>
-              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" type="password" placeholder="Create a password" />
               <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className={classes.defaultFormAlert}>{state.password.message}</div>
               </CSSTransition>
+              <input onChange={e => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" type="password" placeholder="Create a password" />
+
             </div>
             <div className={classes.formControlHolder}>
-              <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" type="password" placeholder="Confirm password" />
               <CSSTransition in={state.passwordCheck.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className={classes.defaultFormAlert}>{state.passwordCheck.message}</div>
               </CSSTransition>
+              <input onChange={e => dispatch({ type: "passwordCheckImmediately", value: e.target.value })} id="password-check-register" name="password" type="password" placeholder="Confirm password" />
             </div>
             <div className={classes.formControlHolder}>
               <button type="submit">Register for Freedash</button>

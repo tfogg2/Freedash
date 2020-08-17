@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-textarea-autosize'
 import ReactTooltip from "react-tooltip"
+import DispatchContext from '../DispatchContext'
 
 const useStyles = createUseStyles(theme => ({
     project: {
@@ -288,7 +289,7 @@ const options = [
 function ProjectView(props) {
     const { id } = useParams()
     const appState = useContext(StateContext)
-
+    const appDispatch = useContext(DispatchContext)
 
     const initialState = {
         project: {
@@ -503,6 +504,7 @@ function ProjectView(props) {
             dispatch({ type: "clearStateStep" })
             dispatch({ type: "toggleEdit" })
             dispatch({ type: "toggleStepUpdate" })
+            appDispatch({ type: "flashMessage", value: "Step updated successfully!" })
 
         } catch {
             console.log("There was an error.")
@@ -552,8 +554,8 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-                    // console.log(edit.data)
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -609,6 +611,7 @@ function ProjectView(props) {
                 dispatch({ type: "isLoaded", value: true })
                 dispatch({ type: "clearNewStep" })
                 dispatch({ type: "closeStep" })
+                appDispatch({ type: "flashMessage", value: "Step added successfully!" })
             } else {
                 console.log("There was an error getting a response from the server.")
             }

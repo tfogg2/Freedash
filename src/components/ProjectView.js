@@ -630,6 +630,21 @@ function ProjectView(props) {
         }
     }
 
+    useEffect(() => {
+        async function openShare(){
+            try {
+                const response = await Axios.get(`http://localhost:5000/projects/${id}/${state.shareToken}`)
+                if (response.data) {
+                    console.log(response.data)
+                }
+                
+            } catch (e) {
+                console.log("There was an error: " + e)
+            }
+        }
+        openShare()
+    }, [state.shareToken, id])
+
     async function toggleShare(e) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()

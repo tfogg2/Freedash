@@ -18,7 +18,6 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     height: "fit-content",
     flexDirection: "column",
-    webkitFontSmoothing: "antialized",
     width: "80%",
     "@media (min-width: 601px)": {
       width: "50%"

@@ -11,6 +11,7 @@ import HomeGuest from "./components/HomeGuest"
 import Login from "./components/Login"
 import Projects from "./components/Projects"
 import CreateProject from "./components/CreateProject"
+import ClientView from "./components/ClientView"
 import ProjectView from "./components/ProjectView"
 import FlashMessages from "./components/FlashMessages"
 import Register from "./components/Register"
@@ -151,6 +152,7 @@ function App(props) {
 
               <Route path="/projects/create" component={CreateProject} exact />
               <Route path="/projects/:id" component={ProjectView} exact />
+              <Route path="/projects/:id/:token" component={ClientView} exact />
               <Route path="/register" component={Register} exact />
             </Switch>
             <Footer />

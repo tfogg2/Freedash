@@ -1,4 +1,5 @@
 const router = require("express").Router()
+const jwt = require("jsonwebtoken")
 const auth = require("../middleware/auth")
 const User = require("../models/User.js")
 let Project = require("../models/Project.js")
@@ -33,16 +34,32 @@ router.post("/create", auth, async (req, res) => {
     res.json(savedProject)
   } catch (e) {
     res.status(500).json({ error: e.message })
+
   }
 
 })
 
 router.post("/:id/share", auth, async (req, res) => {
   try {
-    const urlToken = jwt.sign({ id: req._id }, process.env.JWT_SECRET, { expiresIn: tokenLasts })
+
+    const urlToken = jwt.sign({ id: req.params.id }, process.env.JWT_SECRET, { expiresIn: '30d' })
     res.json(urlToken)
+    console.log(urlToken)
   } catch (e) {
     res.status(500).json({ error: e.message })
+    console.log(e.message)
+  }
+})
+
+router.post("/:id/:token", auth, async (req, res) => {
+  try {
+    console.log(req.params.token)
+    const urlToken = jwt.sign({ id: req.params.id }, process.env.JWT_SECRET, { expiresIn: '30d' })
+    res.json(urlToken)
+    console.log(urlToken)
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+    console.log(e.message)
   }
 })
 

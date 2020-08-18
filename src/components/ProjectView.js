@@ -319,7 +319,8 @@ function ProjectView(props) {
             isCompleted: false
         },
         stepUpdate: 0,
-        countCompleted: 0
+        countCompleted: 0,
+        shareToken: ""
     }
 
     function ourReducer(draft, action) {
@@ -443,6 +444,10 @@ function ProjectView(props) {
 
             case "countCompleted":
                 draft.countCompleted = action.value
+                return
+
+            case "setShareToken":
+                draft.shareToken = action.value
                 return
 
 
@@ -627,8 +632,18 @@ function ProjectView(props) {
 
     async function toggleShare(e) {
         e.preventDefault()
-        const response = await Axios.post(`http://localhost:5000/projects/${state.id}/share`, { headers: { "freedashToken": appState.user.token } })
-        console.log(response.data)
+        const ourRequest = Axios.CancelToken.source()
+        try {
+            const response = await Axios.post(`http://localhost:5000/projects/${id}/share`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
+            console.log(response.data)
+            dispatch({ type: "setShareToken", value: response.data })
+        } catch (e) {
+            console.log("There was an error: " + e)
+        }
+        return () => {
+            ourRequest.cancel()
+        }
+
     }
 
 
@@ -642,6 +657,9 @@ function ProjectView(props) {
     const classes = useStyles()
     const project = state.project
     const percentage = state.progress + "%"
+
+    const shareUrl = `https://localhost:3000/projects/${id}/${state.shareToken}`
+
 
     // if (appState.user.id == project.userId) {
     if (state.project.isLoaded) {
@@ -664,7 +682,8 @@ function ProjectView(props) {
                             <span className={classes.progressBar} style={{ width: percentage }}></span>
                         </span>
                     </div>
-                    {/* <button onClick={toggleShare}>Share</button> */}
+                    <button onClick={toggleShare}>Share</button>
+                    {shareUrl}
                     {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.showAddStep)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.showAddStep)}>Close</button>}
                 </div>
 

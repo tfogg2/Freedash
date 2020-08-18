@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { createUseStyles } from 'react-jss'
-import { useImmerReducer, useImmer } from 'use-immer'
+import { useImmerReducer } from 'use-immer'
 import StateContext from '../StateContext'
 import DispatchContext from '../DispatchContext'
 import clsx from 'clsx'

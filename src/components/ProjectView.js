@@ -673,7 +673,7 @@ function ProjectView(props) {
     const project = state.project
     const percentage = state.progress + "%"
 
-    const shareUrl = `https://localhost:3000/projects/${id}/${state.shareToken}`
+    const shareUrl = `http://localhost:3000/projects/${id}/${state.shareToken}`
 
 
     // if (appState.user.id == project.userId) {

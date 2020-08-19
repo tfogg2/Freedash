@@ -12,6 +12,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import ReactTooltip from "react-tooltip"
 import DispatchContext from '../DispatchContext'
 import PageNotFound from './PageNotFound'
+import { useClipboard } from 'use-clipboard-copy';
 
 const useStyles = createUseStyles(theme => ({
     project: {
@@ -35,10 +36,17 @@ const useStyles = createUseStyles(theme => ({
             boxSizing: "border-box",
         }
     },
-    showAddStep: {
+    toggleButtons: {
+        display: "flex",
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "flex-start"
+    },
+    toggleButton: {
         // position: "fixed",
         // bottom: "-5px",
-        width: "100%",
+        display: "flex",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         textDecoration: "none",
@@ -53,12 +61,35 @@ const useStyles = createUseStyles(theme => ({
     openBtn: {
         background: "#6767ff",
         color: "#fff",
-        border: "1px solid #f1f1f1"
+        border: "none",
+        marginRight: 10,
+        "&:hover": {
+            background: "#fff",
+            color: "#6767ff",
+            border: "1px solid #6767ff",
+        }
     },
     closeBtn: {
         background: "#fff",
         color: "#6767ff",
-        border: "1px solid #6767ff"
+        border: "none",
+        marginRight: 10,
+        "&:hover": {
+            background: "#6767ff",
+            color: "#fff",
+            border: "1px solid #f1f1f1",
+        }
+    },
+    copyBtn: {
+        background: "#fff",
+        color: "#6767ff",
+        border: "1px solid #6767ff",
+        marginLeft: 10,
+        "&:hover": {
+            background: "#6767ff",
+            color: "#fff",
+            border: "1px solid #f1f1f1",
+        }
     },
     formHolder: {
         // "@media (max-width: 600px)": {
@@ -280,6 +311,9 @@ const useStyles = createUseStyles(theme => ({
             color: "#6767ff"
         }
     },
+    shareLink: {
+        display: "none"
+    }
 }))
 
 const options = [
@@ -320,7 +354,8 @@ function ProjectView(props) {
         },
         stepUpdate: 0,
         countCompleted: 0,
-        shareToken: ""
+        shareToken: "",
+        copyCount: -1
     }
 
     function ourReducer(draft, action) {
@@ -450,6 +485,10 @@ function ProjectView(props) {
                 draft.shareToken = action.value
                 return
 
+            case "copyCount":
+                draft.copyCount += action.value
+                return
+
 
 
         }
@@ -465,9 +504,12 @@ function ProjectView(props) {
                     const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     if (response.data) {
                         // console.log(response.data)
-                        dispatch({ type: "isLoaded", value: true })
+
                         dispatch({ type: "setProject", value: response.data })
                         dispatch({ type: "toggleStepUpdate" })
+                        const setShareToken = await Axios.post(`http://localhost:5000/projects/${id}/share`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
+                        dispatch({ type: "setShareToken", value: setShareToken.data })
+                        dispatch({ type: "isLoaded", value: true })
                     } else {
                         console.log("There was an error getting a response from the server.")
                     }
@@ -501,12 +543,12 @@ function ProjectView(props) {
             }
         }
         updateProject()
-    }, [state.stepUpdate, appState.user])
+    }, [state.stepUpdate])
 
     async function handleStepEdit(e) {
         e.preventDefault()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${id}/edit/${state.step.id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: state.step.id, projectId: id }, { headers: { "freedashToken": appState.user.token } })
+            const response = await Axios.post(`http://localhost:5000/projects/${id}/steps/edit/${state.step.id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: state.step.id, projectId: id }, { headers: { "freedashToken": appState.user.token } })
             // console.log(response.data)
             dispatch({ type: "clearStateStep" })
             dispatch({ type: "toggleEdit" })
@@ -585,8 +627,7 @@ function ProjectView(props) {
             if (result == true) {
                 const deleteStep = await Axios.delete(`http://localhost:5000/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
                 dispatch({ type: "emptyStep" })
-                dispatch({ type: "toggleStepUpdate" })
-                console.log(deleteStep.data)
+                dispatch({ type: "removeStep", data: deleteStep.data })
             }
         } catch {
             console.log("There was an error.")
@@ -611,7 +652,7 @@ function ProjectView(props) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: state.project.userId, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
             if (response.data) {
                 // console.log(response.data)
                 dispatch({ type: "setProject", value: response.data })
@@ -630,28 +671,29 @@ function ProjectView(props) {
         }
     }
 
-    useEffect(() => {
-        async function openShare(){
-            try {
-                const response = await Axios.get(`http://localhost:5000/projects/${id}/${state.shareToken}`)
-                if (response.data) {
-                    console.log(response.data)
-                }
-                
-            } catch (e) {
-                console.log("There was an error: " + e)
-            }
-        }
-        openShare()
-    }, [state.shareToken, id])
+    // useEffect(() => {
+    //     async function openShare() {
+    //         try {
 
-    async function toggleShare(e) {
-        e.preventDefault()
+    //             const response = await Axios.get(`http://localhost:5000/projects/${id}/${state.shareToken}`)
+    //             if (response.data) {
+    //                 console.log(response.data)
+    //             }
+
+    //         } catch (e) {
+    //             console.log("There was an error: " + e)
+    //         }
+    //     }
+    //     openShare()
+    // }, [state.shareToken, id])
+
+    async function toggleShare() {
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${id}/share`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
-            console.log(response.data)
-            dispatch({ type: "setShareToken", value: response.data })
+            const setShareToken = await Axios.post(`http://localhost:5000/projects/${id}/link`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
+            dispatch({ type: "setShareToken", value: setShareToken.data })
+            const shareUrl = `http://localhost:3000/share/${id}/${setShareToken.data}`
+            clipboard.copy(shareUrl)
         } catch (e) {
             console.log("There was an error: " + e)
         }
@@ -660,6 +702,18 @@ function ProjectView(props) {
         }
 
     }
+
+    const clipboard = useClipboard()
+
+    // useEffect(() => {
+    //     if (state.copyCount >= 1) {
+    //         appDispatch({ type: "flashMessage", value: "Copied to clipboard!" })
+    //     }
+    // }, [state.copyCount])
+
+    // useEffect(() => {
+
+    // }, [clipboard.copy])
 
 
     function toggleAddStep(e) {
@@ -672,8 +726,15 @@ function ProjectView(props) {
     const classes = useStyles()
     const project = state.project
     const percentage = state.progress + "%"
+    // const shareUrl = `http://localhost:3000/projects/${id}/${state.shareToken}`
 
-    const shareUrl = `http://localhost:3000/projects/${id}/${state.shareToken}`
+    const handleCopy = e => {
+        e.preventDefault()
+        toggleShare()
+        appDispatch({ type: "flashMessage", value: "Copied to clipboard!" })
+    }
+
+
 
 
     // if (appState.user.id == project.userId) {
@@ -697,9 +758,11 @@ function ProjectView(props) {
                             <span className={classes.progressBar} style={{ width: percentage }}></span>
                         </span>
                     </div>
-                    <button onClick={toggleShare}>Share</button>
-                    {shareUrl}
-                    {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.showAddStep)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.showAddStep)}>Close</button>}
+
+                    <div className={classes.toggleButtons}>
+                        {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.toggleButton)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.toggleButton)}>Close</button>}
+                        <button onClick={e => handleCopy(e)} className={clsx(classes.copyBtn, classes.toggleButton)}>Share Project</button>
+                    </div>
                 </div>
 
                 {!state.isStepOpen ? <></> : (

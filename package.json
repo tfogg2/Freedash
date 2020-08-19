@@ -22,6 +22,7 @@
     "react-textarea-autosize": "^8.2.0",
     "react-tooltip": "^4.2.8",
     "react-transition-group": "^4.4.1",
+    "use-clipboard-copy": "^0.1.2",
     "use-immer": "^0.4.1"
   },
   "scripts": {

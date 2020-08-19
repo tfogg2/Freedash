@@ -152,7 +152,7 @@ function App(props) {
 
               <Route path="/projects/create" component={CreateProject} exact />
               <Route path="/projects/:id" component={ProjectView} exact />
-              <Route path="/projects/:id/:token" component={ClientView} exact />
+              <Route path="/share/:id/:token" component={ClientView} exact />
               <Route path="/register" component={Register} exact />
             </Switch>
             <Footer />

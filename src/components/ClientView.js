@@ -42,7 +42,7 @@ function ClientView() {
     }
 
     function ourReducer(draft, action) {
-        switch(action.type) {
+        switch (action.type) {
             case "setProject":
                 draft.project.title = action.value.title
                 draft.project.description = action.value.description
@@ -54,7 +54,7 @@ function ClientView() {
             case "countCompleted":
                 draft.countCompleted = action.value
                 return
-            
+
             case "setProgress":
                 draft.progress = action.value
                 return
@@ -68,12 +68,13 @@ function ClientView() {
 
     useEffect(() => {
         async function checkToken() {
-            try {   
-                const response = await Axios.get(`http://localhost:5000/projects/${state.projectId}/${state.shareToken}`)  
+            try {
+
+                const response = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}`, { projectId: state.projectId })
                 if (response.data) {
                     console.log(response.data)
                     dispatch({ type: "setProject", value: response.data })
-                    appDispatch({type: "flashMessage", value:"Project successfully loaded!"})
+                    appDispatch({ type: "flashMessage", value: "Project successfully loaded!" })
                 } else {
                     console.log("There was an error.")
                 }
@@ -87,14 +88,14 @@ function ClientView() {
     useEffect(() => {
         async function progressBar() {
             try {
-                const totalDuration = await Axios.get(`http://localhost:5000/projects/${state.projectId}/${state.shareToken}/steps/progress`)
-                const completedDuration = await Axios.get(`http://localhost:5000/projects/${state.projectId}/${state.shareToken}/steps/completed`)
+                const totalDuration = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}/steps/progress`, { projectId: state.projectId })
+                const completedDuration = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}/steps/completed`, { projectId: state.projectId })
                 dispatch({ type: "countCompleted", value: completedDuration.data })
                 const progress = ((completedDuration.data / totalDuration.data) * 100)
                 const width = "width: " + progress + "%"
                 console.log(width)
                 dispatch({ type: "setProgress", value: progress })
-            } catch (e){
+            } catch (e) {
                 console.log("There was an error." + e)
             }
         }
@@ -104,10 +105,10 @@ function ClientView() {
     const classes = useStyles()
     const percentage = state.progress + "%"
 
-    return(
+    return (
         <div className={classes.porjectInfo}>
             <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                 <h1>{state.project.title}</h1>
+                <h1>{state.project.title}</h1>
             </div>
             <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
                 <h1>{state.project.description}</h1>

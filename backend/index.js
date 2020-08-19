@@ -30,3 +30,5 @@ mongoose.connect(
 app.use("/users", require("./routes/users"))
 
 app.use("/projects", require("./routes/projects"))
+
+app.use("/share", require("./routes/shares"))

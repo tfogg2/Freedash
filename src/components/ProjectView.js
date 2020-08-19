@@ -736,7 +736,7 @@ function ProjectView(props) {
     const handleCopy = e => {
         e.preventDefault()
         toggleShare()
-        appDispatch({ type: "flashMessage", value: "Copied to clipboard!" })
+        appDispatch({ type: "flashMessage", value: "URL copied to clipboard!" })
     }
 
 
@@ -807,7 +807,7 @@ function ProjectView(props) {
                                 <div onClick={e => { dispatch({ type: "setStep", value: step }) }} className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
                                     <div className={classes.stepBody}>
                                         <h3>
-                                            {step.name}
+                                            {step.name ? step.name : "No Name"}
                                         </h3>
                                         {/* <div className={classes.stepSpan}>   
                                                 {step.isCompleted ? (

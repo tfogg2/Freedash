@@ -6,16 +6,9 @@ let Step = require("../models/Step.js")
 
 
 
-
-
-
-
 router.get("/:id/:token", authUrl, async (req, res) => {
   try {
-    console.log(req.params.id)
-    const { projectId } = req.body
     const project = await Project.findById(req.params.id)
-
     res.json(project)
   } catch (e) {
     res.status(500).json({ error: e.message })
@@ -25,7 +18,7 @@ router.get("/:id/:token", authUrl, async (req, res) => {
 
 router.get("/:id/:token/steps/progress", authUrl, async (req, res) => {
   try {
-    const projectId = req.body.projectId
+    const projectId = req.params.id
     const steps = await Step.find({ projectId: projectId })
     let totalDuration = 0
     for (i = 0; i < steps.length; i++) {
@@ -45,7 +38,7 @@ router.get("/:id/:token/steps/progress", authUrl, async (req, res) => {
 router.get("/:id/:token/steps/completed", authUrl, async (req, res) => {
   try {
 
-    const projectId = req.body.projectId
+    const projectId = req.params.id
     const steps = await Step.find({ projectId: projectId })
     let totalDuration = 0
     for (i = 0; i < steps.length; i++) {

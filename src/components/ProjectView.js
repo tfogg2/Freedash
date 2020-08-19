@@ -337,6 +337,7 @@ function ProjectView(props) {
         newStep: {
             name: "",
             duration: 0,
+            userId: "",
             isCompleted: false
         },
         isStepOpen: false,
@@ -389,7 +390,7 @@ function ProjectView(props) {
                 return
 
             case "setSteps":
-                draft.project.steps = action.data
+                draft.project.steps = action.value
                 return
 
             case "clearNewStep":
@@ -405,6 +406,7 @@ function ProjectView(props) {
 
             case "stepName":
                 draft.newStep.name = action.value
+                draft.newStep.userId = draft.project.userId
                 return
 
             case "stepDuration":
@@ -501,12 +503,15 @@ function ProjectView(props) {
             const ourRequest = Axios.CancelToken.source()
             async function fetchProject() {
                 try {
-                    const response = await Axios.get(`http://localhost:5000/projects/${state.id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-                    if (response.data) {
-                        // console.log(response.data)
-
-                        dispatch({ type: "setProject", value: response.data })
-                        dispatch({ type: "toggleStepUpdate" })
+                    const project = await Axios.get(`http://localhost:5000/projects/${id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    if (project.data) {
+                        console.log(project.data)
+                        dispatch({ type: "setProject", value: project.data })
+                        const steps = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                        if (steps.data) {
+                            dispatch({ type: "setSteps", value: steps.data })
+                        }
+                        // dispatch({ type: "toggleStepUpdate" })
                         const setShareToken = await Axios.post(`http://localhost:5000/projects/${id}/share`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
                         dispatch({ type: "setShareToken", value: setShareToken.data })
                         dispatch({ type: "isLoaded", value: true })
@@ -533,7 +538,7 @@ function ProjectView(props) {
                 const project = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } })
                 // console.log(project.data)
                 if (project.data) {
-                    dispatch({ type: "setSteps", data: project.data })
+                    dispatch({ type: "setSteps", value: project.data })
                     dispatch({ type: "isLoaded", value: true })
                 } else {
                     console.log("There was an error getting a response from the server.")
@@ -652,9 +657,9 @@ function ProjectView(props) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: appState.user.id, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: state.newStep.userId, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
             if (response.data) {
-                // console.log(response.data)
+                console.log(response.data)
                 dispatch({ type: "setProject", value: response.data })
                 dispatch({ type: "isLoaded", value: true })
                 dispatch({ type: "clearNewStep" })

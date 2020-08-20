@@ -284,11 +284,15 @@ const useStyles = createUseStyles(theme => ({
     },
     stepBody: {
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         flex: 8,
+        maxWidth: "80%",
         "& h3": {
-            display: "inline-block",
-            lineHeight: "24px"
+            display: "flex",
+            width: "90%",
+            flexDirection: "column",
+            lineHeight: "24px",
+            overflowWrap: "break-word"
         }
     },
     stepDuration: {
@@ -635,7 +639,7 @@ function ProjectView(props) {
                 dispatch({ type: "emptyStep" })
                 dispatch({ type: "removeStep", data: deleteStep.data })
                 window.scrollTo(0, 0)
-                appDispatch({ type: "flashMessage", value: "Step removed successfully!"})
+                appDispatch({ type: "flashMessage", value: "Step removed successfully!" })
             }
         } catch {
             console.log("There was an error.")
@@ -747,14 +751,14 @@ function ProjectView(props) {
 
 
     const time = duration => {
-        var hours = Math.floor(duration / 60);  
+        var hours = Math.floor(duration / 60);
         var minutes = duration % 60;
-        if (hours > 0){
-            return hours + " hours and " + minutes + " minutes"; 
+        if (hours > 0) {
+            return hours + " hours and " + minutes + " minutes";
         } else {
-            return minutes + " minutes"; 
+            return minutes + " minutes";
         }
-        
+
     }
 
 

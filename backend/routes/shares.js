@@ -16,6 +16,18 @@ router.get("/:id/:token", authUrl, async (req, res) => {
   }
 })
 
+router.get("/:id/:token/steps/", authUrl, async (req, res) => {
+  try {
+    const projectId = req.params.id
+    const steps = await Step.find({ projectId: projectId })
+    res.json(steps)
+  } catch (e) {
+    console.log(e.message)
+    res.status(500).json({ error: e.message })
+
+  }
+})
+
 router.get("/:id/:token/steps/progress", authUrl, async (req, res) => {
   try {
     const projectId = req.params.id

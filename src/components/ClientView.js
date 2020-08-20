@@ -341,6 +341,10 @@ function ClientView() {
             case "setProgress":
                 draft.progress = action.value
                 return
+
+            case "setSteps":
+                draft.project.steps = action.value
+                return
         }
     }
 
@@ -357,7 +361,14 @@ function ClientView() {
                 if (response.data) {
                     console.log(response.data)
                     dispatch({ type: "setProject", value: response.data })
-                    appDispatch({ type: "flashMessage", value: "Project successfully loaded!" })
+                    if (response.data) {
+                        const steps = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}/steps`, { headers: { "freedashToken": appState.user.token } })
+                        if (steps.data) {
+                            dispatch({ type: "setSteps", value: steps.data })
+                            appDispatch({ type: "flashMessage", value: "Project successfully loaded!" })
+                        }
+                    }
+
                 } else {
                     console.log("There was an error.")
                 }

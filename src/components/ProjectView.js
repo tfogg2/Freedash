@@ -753,10 +753,31 @@ function ProjectView(props) {
     const time = duration => {
         var hours = Math.floor(duration / 60);
         var minutes = duration % 60;
-        if (hours > 0) {
-            return hours + " hours and " + minutes + " minutes";
+        if (hours == 1) {
+            if (minutes == 1) {
+                return hours + " hour and " + minutes + " minute";
+            } else if (minutes == 0) {
+                return hours + " hour";
+            } else {
+                return hours + " hour and " + minutes + " minutes";
+            }
+
+        } else if (hours > 1) {
+            if (minutes == 1) {
+                return hours + " hours and " + minutes + " minute";
+            } else if (minutes == 0) {
+                return hours + " hours";
+            } else {
+                return hours + " hours and " + minutes + " minutes";
+            }
         } else {
-            return minutes + " minutes";
+            if (minutes == 1) {
+                return minutes + " minute";
+            } else if (minutes == 0) {
+                return null
+            } else {
+                return minutes + " minutes";
+            }
         }
 
     }

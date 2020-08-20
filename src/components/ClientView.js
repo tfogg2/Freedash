@@ -13,7 +13,7 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        marginTop: 100,
+        marginTop: 20,
         "& button": {
             minWidth: "186px",
             justifyContent: "center",
@@ -288,7 +288,7 @@ const useStyles = createUseStyles(theme => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
-        flex: 2
+        flex: 4
     },
     editSpan: {
         color: "#6767ff",

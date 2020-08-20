@@ -20,7 +20,7 @@ const useStyles = createUseStyles(theme => ({
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        marginTop: 100,
+        marginTop: 20,
         "& button": {
             minWidth: "186px",
             justifyContent: "center",
@@ -295,7 +295,7 @@ const useStyles = createUseStyles(theme => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
-        flex: 2
+        flex: 4
     },
     editSpan: {
         color: "#6767ff",
@@ -558,6 +558,7 @@ function ProjectView(props) {
             dispatch({ type: "clearStateStep" })
             dispatch({ type: "toggleEdit" })
             dispatch({ type: "toggleStepUpdate" })
+            window.scrollTo(0, 0)
             appDispatch({ type: "flashMessage", value: "Step updated successfully!" })
 
         } catch {
@@ -633,6 +634,8 @@ function ProjectView(props) {
                 const deleteStep = await Axios.delete(`http://localhost:5000/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
                 dispatch({ type: "emptyStep" })
                 dispatch({ type: "removeStep", data: deleteStep.data })
+                window.scrollTo(0, 0)
+                appDispatch({ type: "flashMessage", value: "Step removed successfully!"})
             }
         } catch {
             console.log("There was an error.")
@@ -664,6 +667,7 @@ function ProjectView(props) {
                 dispatch({ type: "isLoaded", value: true })
                 dispatch({ type: "clearNewStep" })
                 dispatch({ type: "closeStep" })
+                window.scrollTo(0, 0)
                 appDispatch({ type: "flashMessage", value: "Step added successfully!" })
             } else {
                 console.log("There was an error getting a response from the server.")
@@ -736,8 +740,23 @@ function ProjectView(props) {
     const handleCopy = e => {
         e.preventDefault()
         toggleShare()
-        appDispatch({ type: "flashMessage", value: "URL copied to clipboard!" })
+        window.scrollTo(0, 0)
+        appDispatch({ type: "flashMessage", value: "Link copied to clipboard!" })
+
     }
+
+
+    const time = duration => {
+        var hours = Math.floor(duration / 60);  
+        var minutes = duration % 60;
+        if (hours > 0){
+            return hours + " hours and " + minutes + " minutes"; 
+        } else {
+            return minutes + " minutes"; 
+        }
+        
+    }
+
 
 
 
@@ -821,7 +840,7 @@ function ProjectView(props) {
                                     </div>
 
                                     <div className={classes.stepDuration}>
-                                        <p>{step.duration ? step.duration + " minutes" : <></>}</p>
+                                        <p>{step.duration ? time(step.duration) : <></>}</p>
                                     </div>
 
                                     {/* <div className={classes.stepSpan}>

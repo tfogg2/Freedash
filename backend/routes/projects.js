@@ -135,21 +135,13 @@ router.post("/:id/steps/create", auth, async (req, res) => {
 
 router.post("/:id/steps/edit/:id", auth, async (req, res) => {
   const { projectId, name, duration, isCompleted } = req.body
-
   const savedStep = Step.findById(req.body.id).then(step => {
-    step.name = req.body.name
+    step.name = name
     step.duration = duration
     step.isCompleted = isCompleted
-    step.save()
-  })
-
-  Project.findById(req.body.projectId).then(project => {
-    project.steps.push(savedStep)
-    project.save()
-      .then(() => res.json(project))
+    step.save().then(() => res.json(step))
       .catch(err => res.status(400).json("Error: " + err))
   })
-
     .catch(err => res.status(400).json("Error: " + err))
 })
 
@@ -182,6 +174,8 @@ router.delete("/:id/steps/:id", auth, async (req, res) => {
   const deletedStep = await Step.findByIdAndDelete(req.params.id)
   res.json(deletedStep)
 })
+
+
 
 router.post("/:id/edit", auth, async (req, res) => {
 

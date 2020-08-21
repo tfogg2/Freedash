@@ -543,7 +543,13 @@ function ProjectView(props) {
                 // console.log(project.data)
                 if (project.data) {
                     dispatch({ type: "setSteps", value: project.data })
-                    dispatch({ type: "isLoaded", value: true })
+                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: project.data }, { headers: { "freedashToken": appState.user.token } })
+                    if (edit.data) {
+                        dispatch({ type: "isLoaded", value: true })
+                    } else {
+                        console.log("There was an error updating the project.")
+                    }
+
                 } else {
                     console.log("There was an error getting a response from the server.")
                 }
@@ -753,33 +759,18 @@ function ProjectView(props) {
     const time = duration => {
         var hours = Math.floor(duration / 60);
         var minutes = duration % 60;
-        if (hours == 1) {
-            if (minutes == 1) {
-                return hours + " hour and " + minutes + " minute";
-            } else if (minutes == 0) {
-                return hours + " hour";
-            } else {
-                return hours + " hour and " + minutes + " minutes";
+        if (hours >= 1) {
+            let text = `${hours} ${hours === 1 ? 'hour' : 'hours'} and `
+            if (minutes >= 1) {
+                return text += `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`
             }
-
-        } else if (hours > 1) {
-            if (minutes == 1) {
-                return hours + " hours and " + minutes + " minute";
-            } else if (minutes == 0) {
-                return hours + " hours";
-            } else {
-                return hours + " hours and " + minutes + " minutes";
-            }
+            return text
         } else {
-            if (minutes == 1) {
-                return minutes + " minute";
-            } else if (minutes == 0) {
-                return null
-            } else {
-                return minutes + " minutes";
+            if (minutes >= 1) {
+                return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`
             }
+            return null
         }
-
     }
 
 
@@ -843,7 +834,8 @@ function ProjectView(props) {
 
 
                 <div className={classes.steps}>
-                    {state.project.steps.map(step => {
+
+                    {state.project.steps && state.project.steps.map(step => {
                         return (
                             // <Step step={step} />
                             <div>

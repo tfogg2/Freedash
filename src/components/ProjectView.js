@@ -643,7 +643,7 @@ function ProjectView(props) {
             if (result == true) {
                 const deleteStep = await Axios.delete(`/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
                 dispatch({ type: "emptyStep" })
-                dispatch({ type: "removeStep", data: deleteStep.data })
+                dispatch({ type: "toggleStepUpdate" })
                 window.scrollTo(0, 0)
                 appDispatch({ type: "flashMessage", value: "Step removed successfully!" })
             }

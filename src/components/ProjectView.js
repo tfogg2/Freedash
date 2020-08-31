@@ -773,6 +773,9 @@ function ProjectView(props) {
         }
     }
 
+    function handleTitleEnter(e) {
+        e.preventDefault()
+    }
 
 
 
@@ -784,7 +787,7 @@ function ProjectView(props) {
                 <div className={classes.porjectInfo}>
                     <span className={classes.deleteProject} onClick={handleProjectDelete}>&times;</span>
                     <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                        <form>
+                        <form onSubmit={handleTitleEnter}>
                             <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
                         </form>
                     </div>

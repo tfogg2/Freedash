@@ -507,16 +507,16 @@ function ProjectView(props) {
             const ourRequest = Axios.CancelToken.source()
             async function fetchProject() {
                 try {
-                    const project = await Axios.get(`http://localhost:5000/projects/${id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    const project = await Axios.get(`/projects/${id}`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     if (project.data) {
                         console.log(project.data)
                         dispatch({ type: "setProject", value: project.data })
-                        const steps = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                        const steps = await Axios.get(`/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                         if (steps.data) {
                             dispatch({ type: "setSteps", value: steps.data })
                         }
                         // dispatch({ type: "toggleStepUpdate" })
-                        const setShareToken = await Axios.post(`http://localhost:5000/projects/${id}/share`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
+                        const setShareToken = await Axios.post(`/projects/${id}/share`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
                         dispatch({ type: "setShareToken", value: setShareToken.data })
                         dispatch({ type: "isLoaded", value: true })
                     } else {
@@ -539,11 +539,11 @@ function ProjectView(props) {
     useEffect(() => {
         async function updateProject() {
             try {
-                const project = await Axios.get(`http://localhost:5000/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } })
+                const project = await Axios.get(`/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } })
                 // console.log(project.data)
                 if (project.data) {
                     dispatch({ type: "setSteps", value: project.data })
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: project.data }, { headers: { "freedashToken": appState.user.token } })
+                    const edit = await Axios.post(`/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: project.data }, { headers: { "freedashToken": appState.user.token } })
                     if (edit.data) {
                         dispatch({ type: "isLoaded", value: true })
                     } else {
@@ -563,7 +563,7 @@ function ProjectView(props) {
     async function handleStepEdit(e) {
         e.preventDefault()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${id}/steps/edit/${state.step.id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: state.step.id, projectId: id }, { headers: { "freedashToken": appState.user.token } })
+            const response = await Axios.post(`/projects/${id}/steps/edit/${state.step.id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: state.step.id, projectId: id }, { headers: { "freedashToken": appState.user.token } })
             // console.log(response.data)
             dispatch({ type: "clearStateStep" })
             dispatch({ type: "toggleEdit" })
@@ -579,8 +579,8 @@ function ProjectView(props) {
     useEffect(() => {
         async function progressBar() {
             try {
-                const totalDuration = await Axios.get(`http://localhost:5000/projects/${id}/steps/progress`, { headers: { "freedashToken": appState.user.token } })
-                const completedDuration = await Axios.get(`http://localhost:5000/projects/${id}/steps/completed`, { headers: { "freedashToken": appState.user.token } })
+                const totalDuration = await Axios.get(`/projects/${id}/steps/progress`, { headers: { "freedashToken": appState.user.token } })
+                const completedDuration = await Axios.get(`/projects/${id}/steps/completed`, { headers: { "freedashToken": appState.user.token } })
                 dispatch({ type: "countCompleted", value: completedDuration.data })
                 const progress = ((completedDuration.data / totalDuration.data) * 100)
                 const width = "width: " + progress + "%"
@@ -598,7 +598,7 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    const edit = await Axios.post(`/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     // console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
@@ -619,7 +619,7 @@ function ProjectView(props) {
         if (id) {
             async function fetchProject() {
                 try {
-                    const edit = await Axios.post(`http://localhost:5000/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+                    const edit = await Axios.post(`/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
                     console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
@@ -641,7 +641,7 @@ function ProjectView(props) {
         try {
             var result = window.confirm("Are you sure?")
             if (result == true) {
-                const deleteStep = await Axios.delete(`http://localhost:5000/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
+                const deleteStep = await Axios.delete(`/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
                 dispatch({ type: "emptyStep" })
                 dispatch({ type: "removeStep", data: deleteStep.data })
                 window.scrollTo(0, 0)
@@ -657,7 +657,7 @@ function ProjectView(props) {
         try {
             var result = window.confirm("Are you sure you want to delete this project?")
             if (result == true) {
-                const deleteProject = await Axios.delete(`http://localhost:5000/projects/${id}/`, { headers: { "freedashToken": appState.user.token } })
+                const deleteProject = await Axios.delete(`/projects/${id}/`, { headers: { "freedashToken": appState.user.token } })
                 props.history.push("/")
                 console.log(deleteProject.data)
             }
@@ -670,7 +670,7 @@ function ProjectView(props) {
         e.preventDefault()
         const ourRequest = Axios.CancelToken.source()
         try {
-            const response = await Axios.post(`http://localhost:5000/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: state.newStep.userId, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
+            const response = await Axios.post(`/projects/${state.id}/steps/create`, { name: state.newStep.name, duration: state.newStep.duration, projectId: id, userId: state.newStep.userId, isCompleted: state.newStep.isCompleted }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
             if (response.data) {
                 console.log(response.data)
                 dispatch({ type: "setProject", value: response.data })
@@ -694,7 +694,7 @@ function ProjectView(props) {
     //     async function openShare() {
     //         try {
 
-    //             const response = await Axios.get(`http://localhost:5000/projects/${id}/${state.shareToken}`)
+    //             const response = await Axios.get(`/projects/${id}/${state.shareToken}`)
     //             if (response.data) {
     //                 console.log(response.data)
     //             }
@@ -709,7 +709,7 @@ function ProjectView(props) {
     async function toggleShare() {
         const ourRequest = Axios.CancelToken.source()
         try {
-            const setShareToken = await Axios.post(`http://localhost:5000/projects/${id}/link`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
+            const setShareToken = await Axios.post(`/projects/${id}/link`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
             dispatch({ type: "setShareToken", value: setShareToken.data })
             const shareUrl = `http://localhost:3000/share/${id}/${setShareToken.data}`
             clipboard.copy(shareUrl)

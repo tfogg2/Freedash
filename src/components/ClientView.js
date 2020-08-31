@@ -357,12 +357,12 @@ function ClientView() {
         async function checkToken() {
             try {
 
-                const response = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}`, { projectId: state.projectId })
+                const response = await Axios.get(`/share/${state.projectId}/${state.shareToken}`, { projectId: state.projectId })
                 if (response.data) {
                     console.log(response.data)
                     dispatch({ type: "setProject", value: response.data })
                     if (response.data) {
-                        const steps = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}/steps`, { headers: { "freedashToken": appState.user.token } })
+                        const steps = await Axios.get(`/share/${state.projectId}/${state.shareToken}/steps`, { headers: { "freedashToken": appState.user.token } })
                         if (steps.data) {
                             dispatch({ type: "setSteps", value: steps.data })
                             appDispatch({ type: "flashMessage", value: "Project successfully loaded!" })
@@ -382,8 +382,8 @@ function ClientView() {
     useEffect(() => {
         async function progressBar() {
             try {
-                const totalDuration = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}/steps/progress`, { projectId: state.projectId })
-                const completedDuration = await Axios.get(`http://localhost:5000/share/${state.projectId}/${state.shareToken}/steps/completed`, { projectId: state.projectId })
+                const totalDuration = await Axios.get(`/share/${state.projectId}/${state.shareToken}/steps/progress`, { projectId: state.projectId })
+                const completedDuration = await Axios.get(`/share/${state.projectId}/${state.shareToken}/steps/completed`, { projectId: state.projectId })
                 dispatch({ type: "countCompleted", value: completedDuration.data })
                 const progress = ((completedDuration.data / totalDuration.data) * 100)
                 const width = "width: " + progress + "%"

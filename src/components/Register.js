@@ -255,7 +255,7 @@ function Register(props) {
   //     const ourRequest = Axios.CancelToken.source()
   //     async function fetchResults() {
   //       try {
-  //         const response = await Axios.post("http://localhost:5000/users/doesUsernameExist", { username: state.username.value }, { cancelToken: ourRequest.token })
+  //         const response = await Axios.post("/users/doesUsernameExist", { username: state.username.value }, { cancelToken: ourRequest.token })
   //         dispatch({ type: "usernameUniqueResults", value: response.data })
   //       } catch (e) {
   //         console.log("There was a problem or the request was canceled")
@@ -272,7 +272,7 @@ function Register(props) {
       const ourRequest = Axios.CancelToken.source()
       async function fetchResults() {
         try {
-          const response = await Axios.post("http://localhost:5000/users/doesEmailExist", { email: state.email.value }, { cancelToken: ourRequest.token })
+          const response = await Axios.post("/users/doesEmailExist", { email: state.email.value }, { cancelToken: ourRequest.token })
           console.log(response)
           dispatch({ type: "emailUniqueResults", value: response.data })
         } catch (e) {
@@ -290,7 +290,7 @@ function Register(props) {
       const ourRequest = Axios.CancelToken.source()
       async function fetchResults() {
         try {
-          const response = await Axios.post("http://localhost:5000/users/register", { email: state.email.value, password: state.password.value, passwordCheck: state.passwordCheck.value, displayName: state.email.value }, { cancelToken: ourRequest.token })
+          const response = await Axios.post("/users/register", { email: state.email.value, password: state.password.value, passwordCheck: state.passwordCheck.value, displayName: state.email.value }, { cancelToken: ourRequest.token })
           appDispatch({ type: "flashMessage", value: "Welcome, you've joined the party!" })
           appDispatch({ type: "register", data: response.data })
           props.history.push(`/`)

@@ -98,7 +98,7 @@ function Login(props) {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post("http://localhost:5000/users/login", { email, password })
+      const response = await Axios.post("/users/login", { email, password })
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "login", data: response.data })

@@ -30,7 +30,7 @@ config = {
   entry: "./src/index.js",
   output: {
     publicPath: "/",
-    path: path.resolve(__dirname, "app"),
+    path: path.resolve(__dirname, ""),
     filename: "bundled.js"
   },
   plugins: [
@@ -54,6 +54,13 @@ config = {
             presets: ["@babel/preset-react", ["@babel/preset-env", { targets: { node: "12" } }]]
           }
         }
+      },
+      {
+        test: /\.css$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "css-loader"
+        }
       }
     ]
   }
@@ -63,7 +70,7 @@ if (currentTask == "webpackDev" || currentTask == "dev") {
   config.devtool = "source-map"
   config.devServer = {
     port: 3000,
-    contentBase: path.join(__dirname, "app"),
+    contentBase: path.join(__dirname, ""),
     hot: true,
     historyApiFallback: { index: "index.html" }
   }

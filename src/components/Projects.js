@@ -36,7 +36,7 @@ function Projects() {
       async function fetchProjects() {
         try {
           const token = loggedInUser.token
-          const response = await Axios.get("http://localhost:5000/projects/", { headers: { "freedashToken": token } })
+          const response = await Axios.get("/projects/", { headers: { "freedashToken": token } })
           if (response.data) {
             appDispatch({ type: "fetchProjects", data: response.data })
             console.log(response.data)

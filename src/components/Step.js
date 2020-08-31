@@ -184,7 +184,7 @@ function Step(props) {
   async function handleStepEdit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post(`http://localhost:5000/projects/${id}/edit/${props.step._id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: props.step_id }, { headers: { "freedashToken": appState.user.token } })
+      const response = await Axios.post(`/projects/${id}/edit/${props.step._id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: props.step_id }, { headers: { "freedashToken": appState.user.token } })
       console.log(response.data)
       dispatch({ type: "toggleEdit" })
       dispatch({ type: "updateStep", data: response.data })

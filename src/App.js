@@ -155,7 +155,6 @@ function App(props) {
               <Route path="/share/:id/:token" component={ClientView} exact />
               <Route path="/register" component={Register} exact />
               <Route component={NotFound} />
-
             </Switch>
             <Footer />
           </BrowserRouter>

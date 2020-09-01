@@ -356,8 +356,7 @@ function ClientView() {
     useEffect(() => {
         async function checkToken() {
             try {
-
-                const response = await Axios.get(`/share/${state.projectId}/${state.shareToken}`, { projectId: state.projectId })
+                const response = await Axios.get(`localhost:5000/share/${state.projectId}/${state.shareToken}`, { projectId: state.projectId })
                 if (response.data) {
                     console.log(response.data)
                     dispatch({ type: "setProject", value: response.data })
@@ -368,7 +367,6 @@ function ClientView() {
                             appDispatch({ type: "flashMessage", value: "Project successfully loaded!" })
                         }
                     }
-
                 } else {
                     console.log("There was an error.")
                 }

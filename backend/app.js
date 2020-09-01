@@ -6,12 +6,14 @@ const jwt = require("jsonwebtoken")
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-app.use("/", require("./router"))
+
 app.use("/users", require("./routes/users"))
 
 app.use("/projects", require("./routes/projects"))
 
 app.use("/share", require("./routes/shares"))
+
+
 
 const server = require("http").createServer(app)
 

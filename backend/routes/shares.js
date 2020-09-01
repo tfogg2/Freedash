@@ -12,7 +12,6 @@ router.get("/:id/:token", authUrl, async (req, res) => {
     res.json(project)
   } catch (e) {
     res.status(500).json({ error: e.message })
-    console.log(e.message)
   }
 })
 
@@ -22,9 +21,7 @@ router.get("/:id/:token/steps/", authUrl, async (req, res) => {
     const steps = await Step.find({ projectId: projectId })
     res.json(steps)
   } catch (e) {
-    console.log(e.message)
     res.status(500).json({ error: e.message })
-
   }
 })
 
@@ -70,8 +67,6 @@ router.get("/:id/:token/steps/completed", authUrl, async (req, res) => {
     res.status(500).json({ error: e.message })
   }
 })
-
-
 
 
 module.exports = router

@@ -302,7 +302,8 @@ const useStyles = createUseStyles(theme => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end",
-        flex: 4
+        flex: 4,
+        marginBottom: "-40px"
     },
     editSpan: {
         color: "#6767ff",

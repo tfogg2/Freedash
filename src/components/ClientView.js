@@ -426,7 +426,6 @@ function ClientView() {
                                         {step.name}
                                     </h3>
                                 </div>
-
                                 <div className={classes.stepDuration}>
                                     <p>{step.duration ? step.duration + " minutes" : <></>}</p>
                                 </div>

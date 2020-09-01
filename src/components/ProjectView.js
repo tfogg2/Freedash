@@ -287,6 +287,8 @@ const useStyles = createUseStyles(theme => ({
         display: "flex",
         flexDirection: "row",
         flex: 8,
+        height: "50px",
+        padding: "20px 0",
         maxWidth: "80%",
         "& h3": {
             display: "flex",

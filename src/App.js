@@ -15,6 +15,7 @@ import ClientView from "./components/ClientView"
 import ProjectView from "./components/ProjectView"
 import FlashMessages from "./components/FlashMessages"
 import Register from "./components/Register"
+import NotFound from './components/PageNotFound'
 import Footer from "./components/Footer"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
@@ -149,11 +150,12 @@ function App(props) {
             <Switch>
               {state.loggedIn ? <Route path="/" component={Home} exact /> : <Route path="/" component={HomeGuest} exact />}
               <Route path="/login" component={Login} exact />
-              <Route path="/projects" component={Projects} exact />
               <Route path="/projects/create" component={CreateProject} exact />
               <Route path="/projects/:id" component={ProjectView} exact />
               <Route path="/share/:id/:token" component={ClientView} exact />
               <Route path="/register" component={Register} exact />
+              <Route component={NotFound} />
+
             </Switch>
             <Footer />
           </BrowserRouter>

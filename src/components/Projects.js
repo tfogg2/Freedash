@@ -13,7 +13,10 @@ const useStyles = createUseStyles(theme => ({
     listStyleType: "none",
     border: ".5px solid #f7f7f7",
     width: "100%",
-    padding: "0 0px"
+    padding: "0 0px",
+    "& a": {
+      color: "#000"
+    }
   },
   noProjectsHeader: {
     width: "80%",
@@ -24,6 +27,7 @@ const useStyles = createUseStyles(theme => ({
     color: "#6767ff",
     lineHeight: "42px",
   }
+
 }))
 
 function Projects() {

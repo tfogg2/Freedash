@@ -5,7 +5,6 @@ import { useImmerReducer } from "use-immer"
 import DispatchContext from "../DispatchContext"
 import { CSSTransition } from "react-transition-group"
 import { createUseStyles } from "react-jss"
-import StateContext from "../StateContext"
 
 const useStyles = createUseStyles(theme => ({
   defaultPage: {
@@ -134,36 +133,6 @@ function Register(props) {
 
   function ourReducer(draft, action) {
     switch (action.type) {
-      // case "usernameImmediately":
-      //   draft.username.hasErrors = false
-      //   draft.username.value = action.value
-      //   if (draft.username.value.length > 30) {
-      //     draft.username.hasErrors = true
-      //     draft.username.message = "Username cannot exceed 30 characters"
-      //   }
-      //   if (draft.username.value && !/^([a-zA-Z0-9]+)$/.test(draft.username.value)) {
-      //     draft.username.hasErrors = true
-      //     draft.username.message = "Username can only include letters and numbers."
-      //   }
-      //   return
-      // case "usernameAfterDelay":
-      //   if (draft.username.value.length < 3) {
-      //     draft.username.hasErrors = true
-      //     draft.username.message = "Username must be atleast three characters."
-      //   }
-      //   if (!draft.hasErrors && !action.noRequest) {
-      //     draft.username.checkCount++
-      //   }
-      //   return
-      // case "usernameUniqueResults":
-      //   if (action.value) {
-      //     draft.username.hasErrors = true
-      //     draft.username.isUnique = false
-      //     draft.username.message = "That username is already taken."
-      //   } else {
-      //     draft.username.isUnique = true
-      //   }
-      //   return
       case "emailImmediately":
         draft.email.hasErrors = false
         draft.email.value = action.value
@@ -213,7 +182,6 @@ function Register(props) {
         return
       case "submitForm":
         if (!draft.passwordCheck.hasErrors && !draft.email.hasErrors && !draft.password.hasErrors) {
-          //&& draft.username.isUnique && draft.email.isUnique
           draft.submitCount++
         }
         return
@@ -221,13 +189,6 @@ function Register(props) {
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
-
-  // useEffect(() => {
-  //   if (state.username.value) {
-  //     const delay = setTimeout(() => dispatch({ type: "usernameAfterDelay" }), 800)
-  //     return () => clearTimeout(delay)
-  //   }
-  // }, [state.username.value])
 
   useEffect(() => {
     if (state.email.value) {
@@ -249,23 +210,6 @@ function Register(props) {
       return () => clearTimeout(delay)
     }
   }, [state.passwordCheck.value])
-
-  // useEffect(() => {
-  //   if (state.username.checkCount) {
-  //     const ourRequest = Axios.CancelToken.source()
-  //     async function fetchResults() {
-  //       try {
-  //         const response = await Axios.post("/users/doesUsernameExist", { username: state.username.value }, { cancelToken: ourRequest.token })
-  //         dispatch({ type: "usernameUniqueResults", value: response.data })
-  //       } catch (e) {
-  //         console.log("There was a problem or the request was canceled")
-  //       }
-  //     }
-  //     fetchResults()
-
-  //     return () => ourRequest.cancel()
-  //   }
-  // }, [state.username.checkCount])
 
   useEffect(() => {
     if (state.email.checkCount) {
@@ -306,8 +250,6 @@ function Register(props) {
 
   function handleFormSubmit(e) {
     e.preventDefault()
-    // dispatch({ type: "usernameImmediately", value: state.username.value })
-    // dispatch({ type: "usernameAfterDelay", value: state.username.value, noRequest: true })
     dispatch({ type: "emailImmediately", value: state.email.value })
     dispatch({ type: "emailAfterDelay", value: state.email.value, noRequest: true })
     dispatch({ type: "passwordImmediately", value: state.password.value })

@@ -30,12 +30,13 @@ button {
 }
 a {
   color: #000;
+  transition: .2s all ease-in-out;
   font-family: 'Roboto', sans-serif;
 }
-
 a:visited {
   color: #000;
 }
+
 
 .App-header {
   background-color: #282c34;

@@ -19,7 +19,10 @@ const useStyles = createUseStyles(theme => ({
     padding: "0 40px",
     "& a": {
       textDecoration: "none",
-      color: "#6767ff"
+      color: "#6767ff",
+      "&:hover": {
+        color: "#4141bd"
+      }
     }
   },
   mainNav: {

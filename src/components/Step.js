@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 import { createUseStyles } from "react-jss"
 import { useImmerReducer } from 'use-immer'
 import clsx from 'clsx'
-import FontAwesome from 'react-fontawesome'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from "react-tooltip"

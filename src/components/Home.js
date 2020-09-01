@@ -45,7 +45,11 @@ const useStyles = createUseStyles(theme => ({
       padding: "0 20px",
       borderRadius: 5,
       boxSizing: "border-box",
-      border: "1px solid #f1f1f1"
+      border: "1px solid #f1f1f1",
+      transition: ".2s all ease-in-out",
+      "&:hover": {
+        background: "#4141bd",
+      }
     }
   },
 
@@ -90,7 +94,6 @@ function Home(props) {
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "createProject", data: response.data })
-        appDispatch({ type: "flashMessage", value: "You've successfully created a new project!" })
         props.history.push(`/projects/${response.data._id}`)
       } else {
         console.log("There was an error.")

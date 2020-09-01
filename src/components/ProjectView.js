@@ -4,10 +4,9 @@ import { createUseStyles } from 'react-jss'
 import { useImmerReducer } from 'use-immer'
 import StateContext from '../StateContext'
 import Axios from 'axios'
-import Step from './Step'
 import clsx from 'clsx'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+// import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
 import TextareaAutosize from 'react-textarea-autosize'
 import ReactTooltip from "react-tooltip"
 import DispatchContext from '../DispatchContext'
@@ -43,8 +42,6 @@ const useStyles = createUseStyles(theme => ({
         justifyContent: "flex-start"
     },
     toggleButton: {
-        // position: "fixed",
-        // bottom: "-5px",
         display: "flex",
         flex: 1,
         justifyContent: "center",
@@ -62,6 +59,7 @@ const useStyles = createUseStyles(theme => ({
         background: "#6767ff",
         color: "#fff",
         border: "none",
+        transition: ".33s all ease-in-out",
         marginRight: 10,
         "&:hover": {
             background: "#fff",
@@ -73,6 +71,7 @@ const useStyles = createUseStyles(theme => ({
         background: "#fff",
         color: "#6767ff",
         border: "none",
+        transition: ".33s all ease-in-out",
         marginRight: 10,
         "&:hover": {
             background: "#6767ff",
@@ -84,6 +83,7 @@ const useStyles = createUseStyles(theme => ({
         background: "#fff",
         color: "#6767ff",
         border: "1px solid #6767ff",
+        transition: ".33s all ease-in-out",
         marginLeft: 10,
         "&:hover": {
             background: "#6767ff",
@@ -194,7 +194,8 @@ const useStyles = createUseStyles(theme => ({
         "& h2": {
             display: "flex",
             justifyContent: "flex-start",
-            marginBottom: 10
+            marginBottom: 0,
+            marginTop: 40
         },
         "& span": {
             marginTop: "10px",
@@ -407,7 +408,6 @@ function ProjectView(props) {
                 draft.newStep.isCompleted = action.value
                 return
 
-
             case "stepName":
                 draft.newStep.name = action.value
                 draft.newStep.userId = draft.project.userId
@@ -420,6 +420,7 @@ function ProjectView(props) {
             case "editDescription":
                 draft.project.description = action.value
                 return
+
             case "isLoaded":
                 draft.project.isLoaded = action.value
                 return
@@ -443,7 +444,6 @@ function ProjectView(props) {
                 draft.step.name = action.data.name
                 draft.step.duration = action.data.duration
                 draft.step.isCompleted = action.data.isCompleted
-
                 draft.project.steps.push(action.data)
                 return
 
@@ -494,8 +494,6 @@ function ProjectView(props) {
             case "copyCount":
                 draft.copyCount += action.value
                 return
-
-
 
         }
     }
@@ -599,7 +597,6 @@ function ProjectView(props) {
             async function fetchProject() {
                 try {
                     const edit = await Axios.post(`/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: state.project.steps }, { headers: { "freedashToken": appState.user.token } }, { cancelToken: ourRequest.token })
-                    // console.log(edit.data)
                 } catch (e) {
                     console.log("There was an error.")
                 }
@@ -639,7 +636,7 @@ function ProjectView(props) {
     async function handleStepDelete(e) {
         e.preventDefault()
         try {
-            var result = window.confirm("Are you sure?")
+            var result = window.confirm("Are you sure you want to delet this step?")
             if (result == true) {
                 const deleteStep = await Axios.delete(`/projects/${id}/steps/${state.step.id}`, { headers: { "freedashToken": appState.user.token } })
                 dispatch({ type: "emptyStep" })
@@ -690,28 +687,12 @@ function ProjectView(props) {
         }
     }
 
-    // useEffect(() => {
-    //     async function openShare() {
-    //         try {
-
-    //             const response = await Axios.get(`/projects/${id}/${state.shareToken}`)
-    //             if (response.data) {
-    //                 console.log(response.data)
-    //             }
-
-    //         } catch (e) {
-    //             console.log("There was an error: " + e)
-    //         }
-    //     }
-    //     openShare()
-    // }, [state.shareToken, id])
-
     async function toggleShare() {
         const ourRequest = Axios.CancelToken.source()
         try {
             const setShareToken = await Axios.post(`/projects/${id}/link`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
             dispatch({ type: "setShareToken", value: setShareToken.data })
-            const shareUrl = `http://localhost:3000/share/${id}/${setShareToken.data}`
+            const shareUrl = `https://gracious-ramanujan-5c04ed.netlify.app/share/${id}/${setShareToken.data}`
             clipboard.copy(shareUrl)
         } catch (e) {
             console.log("There was an error: " + e)
@@ -723,17 +704,6 @@ function ProjectView(props) {
     }
 
     const clipboard = useClipboard()
-
-    // useEffect(() => {
-    //     if (state.copyCount >= 1) {
-    //         appDispatch({ type: "flashMessage", value: "Copied to clipboard!" })
-    //     }
-    // }, [state.copyCount])
-
-    // useEffect(() => {
-
-    // }, [clipboard.copy])
-
 
     function toggleAddStep(e) {
         e.preventDefault()
@@ -779,150 +749,145 @@ function ProjectView(props) {
 
 
 
-
-    // if (appState.user.id == project.userId) {
-    if (state.project.isLoaded) {
-        return (
-            <div className={classes.project}>
-                <div className={classes.porjectInfo}>
-                    <span className={classes.deleteProject} onClick={handleProjectDelete}>&times;</span>
-                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                        <form onSubmit={handleTitleEnter}>
-                            <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
-                        </form>
-                    </div>
-                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                        <form>
-                            <TextareaAutosize className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
-                        </form>
-                    </div>
-                    <div className={classes.progressBarContianer}>
-                        <span className={classes.fullBar}>
-                            <span className={classes.progressBar} style={{ width: percentage }}></span>
-                        </span>
-                    </div>
-
-                    <div className={classes.toggleButtons}>
-                        {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.toggleButton)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.toggleButton)}>Close</button>}
-                        <button onClick={e => handleCopy(e)} className={clsx(classes.copyBtn, classes.toggleButton)}>Share Project</button>
-                    </div>
-                </div>
-
-                {!state.isStepOpen ? <></> : (
-                    // MAKE THIS A TRANSITION GROUP
-                    <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
-                        <div className={classes.stepInfo}>
-                            <h2>Add Step</h2>
-                            <span onClick={toggleAddStep}>&times;</span>
+    if (appState.user.id === project.userId) {
+        if (state.project.isLoaded) {
+            return (
+                <div className={classes.project}>
+                    <div className={classes.porjectInfo}>
+                        <span className={classes.deleteProject} onClick={handleProjectDelete}>&times;</span>
+                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                            <form onSubmit={handleTitleEnter}>
+                                <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
+                            </form>
                         </div>
-                        <form onSubmit={handleAddStep} className={classes.stepForm}>
-                            <div className={classes.stepSegment}>
-                                <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
-                                <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
-                            </div>
-                            <br />
-                            <div className={classes.stepSegment}>
-                                <label>Has this step been completed?</label>
-                                <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
-                                    <option value={false}>No</option>
-                                    <option value={true}>Yes</option>
-                                </select>
-                            </div>
-                            <button type="submit" >Create</button>
-                        </form>
+                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                            <form>
+                                <TextareaAutosize className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
+                            </form>
+                        </div>
+                        <div className={classes.progressBarContianer}>
+                            <span className={classes.fullBar}>
+                                <span className={classes.progressBar} style={{ width: percentage }}></span>
+                            </span>
+                        </div>
 
+                        <div className={classes.toggleButtons}>
+                            {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.toggleButton)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.toggleButton)}>Close</button>}
+                            <button onClick={e => handleCopy(e)} className={clsx(classes.copyBtn, classes.toggleButton)}>Share Project</button>
+                        </div>
                     </div>
-                )}
 
-
-
-                <div className={classes.steps}>
-
-                    {state.project.steps && state.project.steps.map(step => {
-                        return (
-                            // <Step step={step} />
-                            <div>
-                                <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
-                                <div onClick={e => { dispatch({ type: "setStep", value: step }) }} className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
-                                    <div className={classes.stepBody}>
-                                        <h3>
-                                            {step.name ? step.name : "No Name"}
-                                        </h3>
-                                        {/* <div className={classes.stepSpan}>   
-                                                {step.isCompleted ? (
-                                                    <>
-                                                        <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
-                                                        <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
-                                                    </>
-                                                ) : <span className={classes.incomplete} data-tip="Completed"></span>}
-                                            </div> */}
-
-                                    </div>
-
-                                    <div className={classes.stepDuration}>
-                                        <p>{step.duration ? time(step.duration) : <></>}</p>
-                                    </div>
-
-                                    {/* <div className={classes.stepSpan}>
-                                            <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
-                                        </div> */}
+                    {!state.isStepOpen ? <></> : (
+                        // MAKE THIS A TRANSITION GROUP
+                        <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
+                            <div className={classes.stepInfo}>
+                                <h2>Add Step</h2>
+                                <span onClick={toggleAddStep}>&times;</span>
+                            </div>
+                            <form onSubmit={handleAddStep} className={classes.stepForm}>
+                                <div className={classes.stepSegment}>
+                                    <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
+                                    <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
                                 </div>
-                                {state.isStepEditing && (
-                                    <div className={classes.stepFormHolder}>
-                                        <div className={classes.stepInfo}>
-                                            <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
-                                            <h2>Edit Step</h2>
-                                            <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
+                                <br />
+                                <div className={classes.stepSegment}>
+                                    <label>Has this step been completed?</label>
+                                    <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
+                                        <option value={false}>No</option>
+                                        <option value={true}>Yes</option>
+                                    </select>
+                                </div>
+                                <button type="submit" >Create</button>
+                            </form>
+
+                        </div>
+                    )}
+
+
+
+                    <div className={classes.steps}>
+
+                        {state.project.steps && state.project.steps.map(step => {
+                            return (
+                                // <Step step={step} />
+                                <div>
+                                    <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                    <div onClick={e => { dispatch({ type: "setStep", value: step }) }} className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
+                                        <div className={classes.stepBody}>
+                                            <h3>
+                                                {step.name ? step.name : "No Name"}
+                                            </h3>
+                                            {/* <div className={classes.stepSpan}>   
+                                                    {step.isCompleted ? (
+                                                        <>
+                                                            <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                                            <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
+                                                        </>
+                                                    ) : <span className={classes.incomplete} data-tip="Completed"></span>}
+                                                </div> */}
+
                                         </div>
-                                        <form onSubmit={handleStepEdit} className={classes.stepForm}>
-                                            <div className={classes.stepSegment}>
-                                                <input className={classes.stepName} value={state.step.name} placeholder={state.step.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "editStepName", value: e.target.value })} />
-                                                <input type="number" value={state.step.duration} placeholder={state.step.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "editStepDuration", value: e.target.value })} />
-                                            </div>
-                                            <br />
-                                            <div className={classes.stepSegment}>
-                                                <label>Has this step been completed?</label>
-                                                <select onChange={e => dispatch({ type: "editStepStatus", value: e.target.value })}>
-                                                    <option value={false} selected={state.step.isCompleted == false ? true : false}>No</option>
-                                                    <option value={true} selected={state.step.isCompleted == true ? true : false}>Yes</option>
-                                                </select>
-                                            </div>
-                                            <button type="submit" >Update</button>
-                                        </form>
+
+                                        <div className={classes.stepDuration}>
+                                            <p>{step.duration ? time(step.duration) : <></>}</p>
+                                        </div>
+
+                                        {/* <div className={classes.stepSpan}>
+                                                <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
+                                            </div> */}
                                     </div>
-                                )}
-                            </div>
-                        )
-                    })}
+                                    {state.isStepEditing && (
+                                        <div className={classes.stepFormHolder}>
+                                            <div className={classes.stepInfo}>
+                                                <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
+                                                <h2>Edit Step</h2>
+                                                <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
+                                            </div>
+                                            <form onSubmit={handleStepEdit} className={classes.stepForm}>
+                                                <div className={classes.stepSegment}>
+                                                    <input className={classes.stepName} value={state.step.name} placeholder={state.step.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "editStepName", value: e.target.value })} />
+                                                    <input type="number" value={state.step.duration} placeholder={state.step.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "editStepDuration", value: e.target.value })} />
+                                                </div>
+                                                <br />
+                                                <div className={classes.stepSegment}>
+                                                    <label>Has this step been completed?</label>
+                                                    <select onChange={e => dispatch({ type: "editStepStatus", value: e.target.value })}>
+                                                        <option value={false} selected={state.step.isCompleted == false ? true : false}>No</option>
+                                                        <option value={true} selected={state.step.isCompleted == true ? true : false}>Yes</option>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" >Update</button>
+                                            </form>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return (
+
+                <div className={classes.project}>
+                    <div className={classes.porjectInfo}>
+                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                            <form>
+                                <input className={classes.projectTitle} type="text" placeholder={project.title !== "" ? "" : ""} />
+                            </form>
+                        </div>
+                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                            <form>
+                                <input className={classes.projectDescription} placeholder={project.description !== "" ? "" : ""} />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     } else {
-        return (
-
-            <div className={classes.project}>
-                <div className={classes.porjectInfo}>
-                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                        <form>
-                            <input className={classes.projectTitle} type="text" placeholder={project.title !== "" ? "" : ""} />
-                        </form>
-                    </div>
-                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                        <form>
-                            <input className={classes.projectDescription} placeholder={project.description !== "" ? "" : ""} />
-                        </form>
-                    </div>
-                </div>
-            </div>
-        )
+        return <></>
     }
-    // } else {
-    //     return (
-    //         <PageNotFound />
-    //     )
-    // }
-
-
 
 
 

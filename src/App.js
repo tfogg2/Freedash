@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
-import ReactDOM from "react-dom"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
-import "./App.css"
 import { ThemeProvider } from "react-jss"
 import theme from "./Styles/theme"
 import HeaderLoggedOut from "./components/HeaderLoggedOut"

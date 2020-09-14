@@ -541,7 +541,6 @@ function ProjectView(props) {
         async function updateProject() {
             try {
                 const project = await Axios.get(`/projects/${id}/steps`, { headers: { "freedashToken": appState.user.token } })
-                // console.log(project.data)
                 if (project.data) {
                     dispatch({ type: "setSteps", value: project.data })
                     const edit = await Axios.post(`/projects/${state.id}/edit`, { title: state.project.title, description: state.project.description, userId: appState.user.id, steps: project.data }, { headers: { "freedashToken": appState.user.token } })

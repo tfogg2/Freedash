@@ -9,8 +9,8 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    height: "70vh",
-    paddingTop: "50px",
+    paddingTop: "20px",
+    background: "#ffefa6",
     flexDirection: "column"
   },
   homeText: {
@@ -18,6 +18,7 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     height: "fit-content",
     flexDirection: "column",
+    paddingTop: "50px", 
     width: "80%",
     "@media (min-width: 601px)": {
       width: "50%"
@@ -33,6 +34,7 @@ const useStyles = createUseStyles(theme => ({
       flex: 0,
       fontSize: "72px",
       width: "50%",
+      color:"#15157f",
       alignSelf: "flex-center",
       margin: 0
     },

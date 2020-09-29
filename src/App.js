@@ -152,7 +152,7 @@ function App(props) {
               <Route path="/projects/:id" component={ProjectView} exact />
               <Route path="/share/:id/:token" component={ClientView} exact />
               <Route path="/register" component={Register} exact />
-              <Route component={NotFound} />
+              
             </Switch>
             {/* <Footer /> */}
           </BrowserRouter>

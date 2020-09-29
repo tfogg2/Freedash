@@ -762,144 +762,141 @@ function ProjectView(props) {
 
 
 
-    if (appState.user.id === project.userId) {
-        if (state.project.isLoaded) {
-            return (
-                <div className={classes.project}>
-                    <div className={classes.porjectInfo}>
-                        <span className={classes.deleteProject} onClick={handleProjectDelete}>&times;</span>
-                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                            <form onSubmit={handleTitleEnter}>
-                                <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
-                            </form>
-                        </div>
-                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                            <form>
-                                <TextareaAutosize className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
-                            </form>
-                        </div>
-                        <div className={classes.progressBarContianer}>
-                            <span className={classes.fullBar}>
-                                <span className={classes.progressBar} style={{ width: percentage }}></span>
-                            </span>
-                        </div>
-
-                        <div className={classes.toggleButtons}>
-                            {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.toggleButton)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.toggleButton)}>Close</button>}
-                            <button onClick={e => handleCopy(e)} className={clsx(classes.copyBtn, classes.toggleButton)}>Share Project</button>
-                        </div>
+    // if (appState.user.id === project.userId) {
+    if (state.project.isLoaded) {
+        return (
+            <div className={classes.project}>
+                <div className={classes.porjectInfo}>
+                    <span className={classes.deleteProject} onClick={handleProjectDelete}>&times;</span>
+                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                        <form onSubmit={handleTitleEnter}>
+                            <input className={classes.projectTitle} type="text" onChange={e => dispatch({ type: "editTitle", value: e.target.value })} value={project.title} placeholder={project.title !== "" ? "" : "Give your project a title"} />
+                        </form>
+                    </div>
+                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                        <form>
+                            <TextareaAutosize className={classes.projectDescription} onChange={e => dispatch({ type: "editDescription", value: e.target.value })} value={project.description} placeholder={project.description !== "" ? "" : "Build something awesome."} />
+                        </form>
+                    </div>
+                    <div className={classes.progressBarContianer}>
+                        <span className={classes.fullBar}>
+                            <span className={classes.progressBar} style={{ width: percentage }}></span>
+                        </span>
                     </div>
 
-                    {!state.isStepOpen ? <></> : (
-                        // MAKE THIS A TRANSITION GROUP
-                        <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
-                            <div className={classes.stepInfo}>
-                                <h2>Add Step</h2>
-                                <span onClick={toggleAddStep}>&times;</span>
+                    <div className={classes.toggleButtons}>
+                        {!state.isStepOpen ? <button onClick={toggleAddStep} className={clsx(classes.openBtn, classes.toggleButton)}>Add Step</button> : <button onClick={toggleAddStep} className={clsx(classes.closeBtn, classes.toggleButton)}>Close</button>}
+                        <button onClick={e => handleCopy(e)} className={clsx(classes.copyBtn, classes.toggleButton)}>Share Project</button>
+                    </div>
+                </div>
+
+                {!state.isStepOpen ? <></> : (
+                    // MAKE THIS A TRANSITION GROUP
+                    <div className={state.isStepOpen ? classes.stepFormHolder : classes.hide}>
+                        <div className={classes.stepInfo}>
+                            <h2>Add Step</h2>
+                            <span onClick={toggleAddStep}>&times;</span>
+                        </div>
+                        <form onSubmit={handleAddStep} className={classes.stepForm}>
+                            <div className={classes.stepSegment}>
+                                <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
+                                <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
                             </div>
-                            <form onSubmit={handleAddStep} className={classes.stepForm}>
-                                <div className={classes.stepSegment}>
-                                    <input className={classes.stepName} name="newStepName" value={state.newStep.name} placeholder={state.newStep.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "stepName", value: e.target.value })} />
-                                    <input type="number" value={state.newStep.duration} placeholder={state.newStep.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "stepDuration", value: e.target.value })} />
-                                </div>
-                                <br />
-                                <div className={classes.stepSegment}>
-                                    <label>Has this step been completed?</label>
-                                    <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
-                                        <option value={false}>No</option>
-                                        <option value={true}>Yes</option>
-                                    </select>
-                                </div>
-                                <button type="submit" >Create</button>
-                            </form>
+                            <br />
+                            <div className={classes.stepSegment}>
+                                <label>Has this step been completed?</label>
+                                <select onChange={e => dispatch({ type: "toggleCompleted", value: e.target.value })}>
+                                    <option value={false}>No</option>
+                                    <option value={true}>Yes</option>
+                                </select>
+                            </div>
+                            <button type="submit" >Create</button>
+                        </form>
 
-                        </div>
-                    )}
+                    </div>
+                )}
 
 
 
-                    <div className={classes.steps}>
+                <div className={classes.steps}>
 
-                        {state.project.steps && state.project.steps.map(step => {
-                            return (
-                                // <Step step={step} />
-                                <div>
-                                    <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
-                                    <div onClick={e => { dispatch({ type: "setStep", value: step }) }} className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
-                                        <div className={classes.stepBody}>
-                                            <h3>
-                                                {step.name ? step.name : "No Name"}
-                                            </h3>
-                                            {/* <div className={classes.stepSpan}>   
-                                                    {step.isCompleted ? (
-                                                        <>
-                                                            <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
-                                                            <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
-                                                        </>
-                                                    ) : <span className={classes.incomplete} data-tip="Completed"></span>}
-                                                </div> */}
-
-                                        </div>
-
-                                        <div className={classes.stepDuration}>
-                                            <p>{step.duration ? time(step.duration) : <></>}</p>
-                                        </div>
-
-                                        {/* <div className={classes.stepSpan}>
-                                                <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
+                    {state.project.steps && state.project.steps.map(step => {
+                        return (
+                            // <Step step={step} />
+                            <div>
+                                <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                <div onClick={e => { dispatch({ type: "setStep", value: step }) }} className={step.isCompleted ? clsx(classes.step, classes.stepCompleted) : classes.step}>
+                                    <div className={classes.stepBody}>
+                                        <h3>
+                                            {step.name ? step.name : "No Name"}
+                                        </h3>
+                                        {/* <div className={classes.stepSpan}>   
+                                                {step.isCompleted ? (
+                                                    <>
+                                                        <ReactTooltip place="bottom" id="completed" className="custom-tooltip" />
+                                                        <span data-tip="Completed"><FontAwesomeIcon icon={faCheckSquare} /></span>
+                                                    </>
+                                                ) : <span className={classes.incomplete} data-tip="Completed"></span>}
                                             </div> */}
-                                    </div>
-                                    {state.isStepEditing && (
-                                        <div className={classes.stepFormHolder}>
-                                            <div className={classes.stepInfo}>
-                                                <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
-                                                <h2>Edit Step</h2>
-                                                <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
-                                            </div>
-                                            <form onSubmit={handleStepEdit} className={classes.stepForm}>
-                                                <div className={classes.stepSegment}>
-                                                    <input className={classes.stepName} value={state.step.name} placeholder={state.step.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "editStepName", value: e.target.value })} />
-                                                    <input type="number" value={state.step.duration} placeholder={state.step.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "editStepDuration", value: e.target.value })} />
-                                                </div>
-                                                <br />
-                                                <div className={classes.stepSegment}>
-                                                    <label>Has this step been completed?</label>
-                                                    <select onChange={e => dispatch({ type: "editStepStatus", value: e.target.value })}>
-                                                        <option value={false} selected={state.step.isCompleted == false ? true : false}>No</option>
-                                                        <option value={true} selected={state.step.isCompleted == true ? true : false}>Yes</option>
-                                                    </select>
-                                                </div>
-                                                <button type="submit" >Update</button>
-                                            </form>
-                                        </div>
-                                    )}
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-            )
-        } else {
-            return (
 
-                <div className={classes.project}>
-                    <div className={classes.porjectInfo}>
-                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                            <form>
-                                <input className={classes.projectTitle} type="text" placeholder={project.title !== "" ? "" : ""} />
-                            </form>
-                        </div>
-                        <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
-                            <form>
-                                <input className={classes.projectDescription} placeholder={project.description !== "" ? "" : ""} />
-                            </form>
-                        </div>
+                                    </div>
+
+                                    <div className={classes.stepDuration}>
+                                        <p>{step.duration ? time(step.duration) : <></>}</p>
+                                    </div>
+
+                                    {/* <div className={classes.stepSpan}>
+                                            <span onClick={e => { dispatch({ type: "setStep", value: step }) }} className={classes.editSpan} data-tip="Completed"><FontAwesomeIcon icon={faEdit} /></span>
+                                        </div> */}
+                                </div>
+                                {state.isStepEditing && (
+                                    <div className={classes.stepFormHolder}>
+                                        <div className={classes.stepInfo}>
+                                            <span onClick={() => { dispatch({ type: "toggleEdit" }) }}>&times;</span>
+                                            <h2>Edit Step</h2>
+                                            <p className={classes.deleteStep} onClick={handleStepDelete}>Delete</p>
+                                        </div>
+                                        <form onSubmit={handleStepEdit} className={classes.stepForm}>
+                                            <div className={classes.stepSegment}>
+                                                <input className={classes.stepName} value={state.step.name} placeholder={state.step.name !== "" ? "" : "What's next?"} onChange={e => dispatch({ type: "editStepName", value: e.target.value })} />
+                                                <input type="number" value={state.step.duration} placeholder={state.step.duration ? "" : "Duration (In minutes)"} className={classes.stepDuration} onChange={e => dispatch({ type: "editStepDuration", value: e.target.value })} />
+                                            </div>
+                                            <br />
+                                            <div className={classes.stepSegment}>
+                                                <label>Has this step been completed?</label>
+                                                <select onChange={e => dispatch({ type: "editStepStatus", value: e.target.value })}>
+                                                    <option value={false} selected={state.step.isCompleted == false ? true : false}>No</option>
+                                                    <option value={true} selected={state.step.isCompleted == true ? true : false}>Yes</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" >Update</button>
+                                        </form>
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        )
+    } else {
+        return (
+
+            <div className={classes.project}>
+                <div className={classes.porjectInfo}>
+                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                        <form>
+                            <input className={classes.projectTitle} type="text" placeholder={project.title !== "" ? "" : ""} />
+                        </form>
+                    </div>
+                    <div className={clsx(classes.formHolder, classes.porjectInfoHolder)}>
+                        <form>
+                            <input className={classes.projectDescription} placeholder={project.description !== "" ? "" : ""} />
+                        </form>
                     </div>
                 </div>
-            )
-        }
-    } else {
-        return <></>
+            </div>
+        )
     }
 
 

@@ -181,14 +181,8 @@ router.post("/:id/edit", auth, async (req, res) => {
 
   Project.findById(req.params.id)
     .then(project => {
-      if (req.body.title) {
-        project.title = req.body.title
-      } else {
-        project.title = "untitled"
-      }
-
+      project.title = req.body.title
       project.description = req.body.description
-
       project.steps = req.body.steps
 
 

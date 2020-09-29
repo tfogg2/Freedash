@@ -39,7 +39,10 @@ const useStyles = createUseStyles(theme => ({
         display: "flex",
         flex: 1,
         flexDirection: "row",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        "@media (max-width: 800px)": {
+            flexDirection: "column"
+        }
     },
     toggleButton: {
         display: "flex",
@@ -47,20 +50,24 @@ const useStyles = createUseStyles(theme => ({
         justifyContent: "center",
         alignItems: "center",
         textDecoration: "none",
+        transition: "all ease-in-out .2s",
         fontWeight: "900",
         fontSize: 16,
         cursor: "pointer",
         height: 42,
+        lineHeight: "36px",
         padding: "0 20px",
         borderRadius: 5,
         boxSizing: "border-box",
+        "@media (max-width: 800px)": {
+            margin: "10px 0"
+        }
     },
     openBtn: {
         background: "#6767ff",
         color: "#fff",
         border: "none",
         transition: ".33s all ease-in-out",
-        marginRight: 10,
         "&:hover": {
             background: "#fff",
             color: "#6767ff",
@@ -72,7 +79,9 @@ const useStyles = createUseStyles(theme => ({
         color: "#6767ff",
         border: "none",
         transition: ".33s all ease-in-out",
-        marginRight: 10,
+        "@media (min-width: 801px)": {
+            marginRight: 10,
+        },
         "&:hover": {
             background: "#6767ff",
             color: "#fff",
@@ -84,7 +93,9 @@ const useStyles = createUseStyles(theme => ({
         color: "#6767ff",
         border: "1px solid #6767ff",
         transition: ".33s all ease-in-out",
-        marginLeft: 10,
+        "@media (min-width: 801px)": {
+            marginLeft: 10,
+        },
         "&:hover": {
             background: "#6767ff",
             color: "#fff",

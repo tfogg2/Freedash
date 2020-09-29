@@ -9,7 +9,7 @@ const useStyles = createUseStyles(theme => ({
     display: theme.layout.default.display,
     alignItems: theme.layout.default.alignItems,
     justifyContent: theme.layout.default.justifyContent,
-    paddingTop: "20px",
+    height: "82vh",
     background: "#ffefa6",
     flexDirection: "column"
   },
@@ -18,7 +18,6 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     height: "fit-content",
     flexDirection: "column",
-    paddingTop: "50px", 
     width: "80%",
     "@media (min-width: 601px)": {
       width: "50%"
@@ -26,7 +25,6 @@ const useStyles = createUseStyles(theme => ({
     "@media (max-width: 600px)": {
       width: "80%"
     },
-    marginBottom: theme.layout.default.marginBottom,
     alignItems: "left",
     justifyContent: "center",
     "& h1": {
@@ -38,13 +36,13 @@ const useStyles = createUseStyles(theme => ({
       alignSelf: "flex-center",
       margin: 0
     },
-    "& h2": {
+    "& p": {
       display: theme.layout.default.display,
-      fontSize: 25,
+      fontSize: 18,
       lineHeight: "32px",
       opacity: ".8",
+      color:"#15157f",
       width: "80%",
-      margin: "40px 0",
       flex: 0,
     },
     "& a": {
@@ -98,8 +96,8 @@ function HomeGuest() {
   return (
     <div className={classes.home}>
       <div className={classes.homeText}>
-        <h1 className={classes.homeMsg}>Home to freelance developers.</h1>
-        <h2>Create unlimited projects and let clients track your progress.</h2>
+        <h1 className={classes.homeMsg}>The Freelancer Dashboard</h1>
+        <p>Organize your projects and let clients track your progress.</p>
         <Link to="/register"><button>Get Started</button></Link>
       </div>
       {/* <div className={clsx(classes.homeScreen, classes.screenOne)}>One</div>

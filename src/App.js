@@ -154,7 +154,7 @@ function App(props) {
               <Route path="/register" component={Register} exact />
               <Route component={NotFound} />
             </Switch>
-            <Footer />
+            {/* <Footer /> */}
           </BrowserRouter>
         </StateContext.Provider>
       </DispatchContext.Provider>

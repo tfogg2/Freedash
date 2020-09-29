@@ -5,15 +5,20 @@ import { createUseStyles } from "react-jss"
 const useStyles = createUseStyles(theme => ({
   header: {
     display: theme.layout.default.display,
-    padding: theme.layout.default.padding,
+    
     alignItems: theme.layout.default.alignItems,
-    justifyContent: theme.layout.default.justifyContent
+    justifyContent: theme.layout.default.justifyContent,
+    "@media (min-width: 601px)":{
+      padding: "20px 80px",
+    },
+    "@media (max-width: 600px)":{
+      padding: "20px"
+    },
   },
   logo: {
     display: theme.layout.default.display,
     flex: 11,
     alignSelf: "flex-start",
-    padding: "0 40px",
     "& a": {
       textDecoration: "none",
       color: "#6767ff",
@@ -26,11 +31,7 @@ const useStyles = createUseStyles(theme => ({
     "@media (min-width: 601px)": {
       display: theme.layout.default.display
     },
-    "@media (max-width: 600px)": {
-      display: "none"
-    },
     flex: 1,
-    padding: "0 40px",
     justifyContent: "right",
     "& ul": {
       listStyleType: "none"
@@ -45,9 +46,9 @@ const useStyles = createUseStyles(theme => ({
       textDecoration: "none",
       color: "#6767ff"
     }
-
   }
 }))
+
 
 function HeaderLoggedOut() {
   const classes = useStyles()

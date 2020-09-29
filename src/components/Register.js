@@ -14,10 +14,9 @@ const useStyles = createUseStyles(theme => ({
   defaultFormPage: {
     display: "flex",
     background: "#F7F9FA",
-    paddingTop: 80,
     padding: "0",
     flexDirection: "row",
-    height: "60vh"
+    height: "82vh"
   },
   defaultForm: {
     display: "flex",

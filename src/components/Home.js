@@ -14,8 +14,10 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: theme.layout.default.justifyContent,
     flexDirection: "row",
     flex: 1,
-    "@media ( max-width: 550px )": {
+    "@media ( max-width: 600px )": {
       flexDirection: "column",
+      justifyContent: "center",
+      alignItems:"center"
     }
   },
   homeLeft: {
@@ -26,8 +28,13 @@ const useStyles = createUseStyles(theme => ({
     display: "flex",
     flex: 2,
     lineHeight: "10px",
+    textAlign: "center",
     paddingTop: 55,
     justifyContent: "center",
+    "@media (max-width: 600px)": {
+      alignItems: "center",
+      textAlign: "center",
+    },
     "& button": {
       display: "flex",
       alignItems: "center",
@@ -59,7 +66,7 @@ const useStyles = createUseStyles(theme => ({
     flex: 3,
     flexDirection: "column",
     marginBottom: theme.layout.default.marginBottom,
-    alignItems: theme.layout.default.alignItems,
+    alignItems: "",
     justifyContent: theme.layout.default.justifyContent,
     "& h2": {
       display: theme.layout.default.display,
@@ -70,6 +77,9 @@ const useStyles = createUseStyles(theme => ({
     },
     "& a": {
       textDecoration: "none"
+    },
+    "@media (max-width: 600px)": {
+      width: "80%"
     }
   }
 }))

@@ -529,6 +529,8 @@ function ProjectView(props) {
                         }
                         // dispatch({ type: "toggleStepUpdate" })
 
+                        dispatch({ type: "isLoaded", value: true })
+
                     } else {
                         console.log("There was an error getting a response from the server.")
                     }
@@ -698,12 +700,15 @@ function ProjectView(props) {
         }
     }
 
+    
+
     async function toggleShare() {
+        const clipboard = useClipboard()
         const ourRequest = Axios.CancelToken.source()
         try {
             const setShareToken = await Axios.post(`/projects/${id}/link`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
             dispatch({ type: "setShareToken", value: setShareToken.data })
-            const shareUrl = `/share/${id}/${setShareToken.data}`
+            const shareUrl = `https://gracious-ramanujan-5c04ed.netlify.app/share/${id}/${setShareToken.data}`
             clipboard.copy(shareUrl)
         } catch (e) {
             console.log("There was an error: " + e)
@@ -714,7 +719,7 @@ function ProjectView(props) {
 
     }
 
-    const clipboard = useClipboard()
+
 
     function toggleAddStep(e) {
         e.preventDefault()
@@ -730,10 +735,9 @@ function ProjectView(props) {
 
     const handleCopy = e => {
         e.preventDefault()
-        toggleShare()
         window.scrollTo(0, 0)
         appDispatch({ type: "flashMessage", value: "Link copied to clipboard!" })
-
+        toggleShare()
     }
 
 

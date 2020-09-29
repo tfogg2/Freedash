@@ -184,9 +184,6 @@ router.post("/:id/edit", auth, async (req, res) => {
       project.title = req.body.title
       project.description = req.body.description
       project.steps = req.body.steps
-
-
-
       project
         .save()
         .then(() => res.json(project))

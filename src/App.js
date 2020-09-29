@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
-import ReactDOM from "react-dom"
 import { BrowserRouter, Switch, Route } from "react-router-dom"
-import "./App.css"
 import { ThemeProvider } from "react-jss"
 import theme from "./Styles/theme"
 import HeaderLoggedOut from "./components/HeaderLoggedOut"
@@ -15,11 +13,13 @@ import ClientView from "./components/ClientView"
 import ProjectView from "./components/ProjectView"
 import FlashMessages from "./components/FlashMessages"
 import Register from "./components/Register"
+import NotFound from './components/PageNotFound'
 import Footer from "./components/Footer"
 import DispatchContext from "./DispatchContext"
 import StateContext from "./StateContext"
 import { useImmerReducer } from "use-immer"
 import Axios from "axios"
+Axios.defaults.baseURL = process.env.BACKENDURL || "https://backend-c.herokuapp.com"
 
 function App(props) {
   const initialState = {
@@ -101,7 +101,7 @@ function App(props) {
       async function fetchResults() {
         try {
           const token = state.user.token
-          const response = await Axios.post("http://localhost:5000/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
+          const response = await Axios.post("/users/checkToken", { token: token }, { cancelToken: ourRequest.token }, { headers: { freedashToken: token } })
           if (!response.data) {
             dispatch({ type: "logout" })
             props.history.push("")
@@ -124,10 +124,10 @@ function App(props) {
         localStorage.setItem("freedashToken", "")
         token = ""
       }
-      const response = await Axios.post("http://localhost:5000/users/tokenIsValid", null, { headers: { freedashToken: token } })
+      const response = await Axios.post("/users/tokenIsValid", null, { headers: { freedashToken: token } })
 
       if (response.data) {
-        const userRes = await Axios.get("http://localhost:5000/users/:id", { headers: { freedashToken: token } })
+        const userRes = await Axios.get("/users/:id", { headers: { freedashToken: token } })
         dispatch({
           type: "setId",
           data: userRes.data.id
@@ -148,14 +148,13 @@ function App(props) {
             <Switch>
               {state.loggedIn ? <Route path="/" component={Home} exact /> : <Route path="/" component={HomeGuest} exact />}
               <Route path="/login" component={Login} exact />
-              <Route path="/projects" component={Projects} exact />
-
               <Route path="/projects/create" component={CreateProject} exact />
               <Route path="/projects/:id" component={ProjectView} exact />
-              <Route path="/projects/:id/:token" component={ClientView} exact />
+              <Route path="/share/:id/:token" component={ClientView} exact />
               <Route path="/register" component={Register} exact />
+              <Route component={NotFound} />
             </Switch>
-            <Footer />
+            {/* <Footer /> */}
           </BrowserRouter>
         </StateContext.Provider>
       </DispatchContext.Provider>

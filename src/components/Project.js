@@ -8,26 +8,18 @@ const useStyles = createUseStyles(theme => ({
     flex: 1,
     flexDirection: "column",
     background: "#fff",
-    height: "80px",
-    boxSizing: "border-box",
+    transition: ".2s all ease-in-out",
     overflow: "hidden",
     justifyContent: "center",
     borderBottom: ".5px solid #f7f7f7",
-    backgroundImage: "linear-gradient(to bottom, transparent, #f9f9f9)",
-    padding: "20px",
-    minWidth: 300,
-    maxWidth: 1000,
+    // backgroundImage: "linear-gradient(to bottom, transparent, #f9f9f9)",
+    padding: "30px",
     '&:hover': {
-      background: "#f7f7f7"
-    },
-    '& h2': {
-      margin: "10px 0"
+      background: "#6767ff36"
     },
     '& p': {
       margin: 0,
-      overflow: "hidden",
-      height: "20px",
-      textOverflow: "ellipsis"
+      height: "20px"
     }
   }
 }))

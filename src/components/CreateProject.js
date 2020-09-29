@@ -142,8 +142,8 @@ function CreateProject(props) {
 
       const token = appState.user.token
       // const check = await appDispatch({type: "checkToken"})
-      // const check = await Axios.post("http://localhost:5000/users/checkToken", { token: loggedInUser.token }, { cancelToken: ourRequest.token })
-      const response = await Axios.post("http://localhost:5000/projects/create", { title, description, userId: appState.user.id }, { headers: { "freedashToken": token } })
+      // const check = await Axios.post("/users/checkToken", { token: loggedInUser.token }, { cancelToken: ourRequest.token })
+      const response = await Axios.post("/projects/create", { title, description, userId: appState.user.id }, { headers: { "freedashToken": token } })
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "createProject", data: response.data })

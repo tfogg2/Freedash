@@ -1,7 +1,7 @@
 export default {
   default: {
     display: "flex",
-    padding: "0px",
+    padding: "20px",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: "40px"

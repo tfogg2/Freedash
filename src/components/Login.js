@@ -12,10 +12,9 @@ const useStyles = createUseStyles(theme => ({
   defaultFormPage: {
     display: "flex",
     background: "#F7F9FA",
-    paddingTop: 80,
     padding: "0",
     flexDirection: "row",
-    height: "60vh"
+    height: "82vh"
   },
   defaultForm: {
     display: "flex",
@@ -98,15 +97,16 @@ function Login(props) {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post("http://localhost:5000/users/login", { email, password })
+      const response = await Axios.post("/users/login", { email, password })
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "login", data: response.data })
-        appDispatch({ type: "flashMessage", value: "You have successfully logged in!" })
-
-        props.history.push("/")
         const id = response.data.user.id
         appDispatch({ type: "setId", data: id })
+        appDispatch({ type: "flashMessage", value: "You have successfully logged in!" })
+        props.history.push("/")
+        
+        
       } else {
         console.log("Incorrect username or password.")
         appDispatch({ type: "flashMessage", value: "Invalid Username/Password" })

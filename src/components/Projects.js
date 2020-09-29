@@ -11,19 +11,21 @@ const useStyles = createUseStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     listStyleType: "none",
-    border: ".5px solid #f7f7f7",
     width: "100%",
-    padding: "0 0px"
+    padding: "0 0px",
+    "& a": {
+      color: "#000"
+    }
   },
   noProjectsHeader: {
     width: "80%",
     fontSize: "36px",
     margin: "40px auto",
     fontWeight: "600",
-    opacity: ".3",
     color: "#6767ff",
     lineHeight: "42px",
   }
+
 }))
 
 function Projects() {
@@ -36,7 +38,7 @@ function Projects() {
       async function fetchProjects() {
         try {
           const token = loggedInUser.token
-          const response = await Axios.get("http://localhost:5000/projects/", { headers: { "freedashToken": token } })
+          const response = await Axios.get("/projects/", { headers: { "freedashToken": token } })
           if (response.data) {
             appDispatch({ type: "fetchProjects", data: response.data })
             console.log(response.data)
@@ -57,10 +59,11 @@ function Projects() {
   const projects = appState.projects
   return (
     <ul className={classes.projectList}>
-      {projects.length > 0 ? projects.map(project => { return <Project project={project} /> }).reverse() : <h1 className={classes.noProjectsHeader}>This is your personal dashboard. Create your first project to get started!</h1>}
-
+      {projects.length > 0 ? projects.map(project => { return <Project key={project.id} project={project} /> }).reverse() : (
+        <></>
+      )}
     </ul>
-  )
+  ) 
 }
 
 export default Projects

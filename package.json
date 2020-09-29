@@ -10,8 +10,19 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
+    "babel-loader": "^8.1.0",
+    "babel-node": "0.0.1-security",
+    "clean-webpack-plugin": "^3.0.0",
     "clsx": "^1.1.1",
+    "css-loader": "^4.2.2",
+    "dotenv-webpack": "^2.0.0",
+    "express": "^4.17.1",
+    "file-loader": "^6.1.0",
+    "fs-extra": "^9.0.1",
+    "html-webpack-harddisk-plugin": "^1.0.2",
+    "html-webpack-plugin": "^4.4.1",
     "immer": "^7.0.5",
+    "npm-run-all": "^4.1.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-fontawesome": "^1.7.1",
@@ -22,13 +33,20 @@
     "react-textarea-autosize": "^8.2.0",
     "react-tooltip": "^4.2.8",
     "react-transition-group": "^4.4.1",
-    "use-immer": "^0.4.1"
+    "sass-loader": "^10.0.1",
+    "use-clipboard-copy": "^0.1.2",
+    "use-immer": "^0.4.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "npm-run-all -s generate webpackDev",
+    "webpackDev": "webpack-dev-server",
+    "build": "npm-run-all -s generate webpackBuild",
+    "webpackBuild": "webpack",
+    "previewDist": "node previewDist",
+    "generate": "babel-node --presets=@babel/preset-react,@babel/preset-env generateHtml.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,5 +62,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/node": "^7.10.5"
   }
 }

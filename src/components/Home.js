@@ -14,8 +14,10 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: theme.layout.default.justifyContent,
     flexDirection: "row",
     flex: 1,
-    "@media ( max-width: 550px )": {
+    "@media ( max-width: 600px )": {
       flexDirection: "column",
+      justifyContent: "center",
+      alignItems:"center"
     }
   },
   homeLeft: {
@@ -26,8 +28,13 @@ const useStyles = createUseStyles(theme => ({
     display: "flex",
     flex: 2,
     lineHeight: "10px",
+    textAlign: "center",
     paddingTop: 55,
     justifyContent: "center",
+    "@media (max-width: 600px)": {
+      alignItems: "center",
+      textAlign: "center",
+    },
     "& button": {
       display: "flex",
       alignItems: "center",
@@ -45,7 +52,11 @@ const useStyles = createUseStyles(theme => ({
       padding: "0 20px",
       borderRadius: 5,
       boxSizing: "border-box",
-      border: "1px solid #f1f1f1"
+      border: "1px solid #f1f1f1",
+      transition: ".2s all ease-in-out",
+      "&:hover": {
+        background: "#4141bd",
+      }
     }
   },
 
@@ -55,7 +66,7 @@ const useStyles = createUseStyles(theme => ({
     flex: 3,
     flexDirection: "column",
     marginBottom: theme.layout.default.marginBottom,
-    alignItems: theme.layout.default.alignItems,
+    alignItems: "",
     justifyContent: theme.layout.default.justifyContent,
     "& h2": {
       display: theme.layout.default.display,
@@ -66,6 +77,9 @@ const useStyles = createUseStyles(theme => ({
     },
     "& a": {
       textDecoration: "none"
+    },
+    "@media (max-width: 600px)": {
+      width: "80%"
     }
   }
 }))
@@ -86,11 +100,10 @@ function Home(props) {
       const token = appState.user.token
       // const check = await appDispatch({type: "checkToken"})
       // const check = await Axios.post("http://localhost:5000/users/checkToken", { token: loggedInUser.token }, { cancelToken: ourRequest.token })
-      const response = await Axios.post("http://localhost:5000/projects/create", { title: "", description: "", userId: appState.user.id, steps: [] }, { headers: { "freedashToken": token } })
+      const response = await Axios.post("/projects/create", { title: "", description: "", userId: appState.user.id, steps: [] }, { headers: { "freedashToken": token } })
       if (response.data) {
         console.log(response.data)
         appDispatch({ type: "createProject", data: response.data })
-        appDispatch({ type: "flashMessage", value: "You've successfully created a new project!" })
         props.history.push(`/projects/${response.data._id}`)
       } else {
         console.log("There was an error.")

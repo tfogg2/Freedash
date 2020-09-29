@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 import { createUseStyles } from "react-jss"
 import { useImmerReducer } from 'use-immer'
 import clsx from 'clsx'
-import FontAwesome from 'react-fontawesome'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckSquare, faCheck, faPenSquare, faEdit } from '@fortawesome/free-solid-svg-icons'
 import ReactTooltip from "react-tooltip"
@@ -184,7 +183,7 @@ function Step(props) {
   async function handleStepEdit(e) {
     e.preventDefault()
     try {
-      const response = await Axios.post(`http://localhost:5000/projects/${id}/edit/${props.step._id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: props.step_id }, { headers: { "freedashToken": appState.user.token } })
+      const response = await Axios.post(`/projects/${id}/edit/${props.step._id}`, { name: state.step.name, duration: state.step.duration, isCompleted: state.step.isCompleted, id: props.step_id }, { headers: { "freedashToken": appState.user.token } })
       console.log(response.data)
       dispatch({ type: "toggleEdit" })
       dispatch({ type: "updateStep", data: response.data })

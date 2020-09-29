@@ -619,7 +619,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.project.title, appState.user])
+    }, [state.project.title])
 
 
     useEffect(() => {
@@ -640,7 +640,7 @@ function ProjectView(props) {
         } else {
             console.log('Something went wrong.')
         }
-    }, [state.project.description, appState.user])
+    }, [state.project.description])
 
 
 

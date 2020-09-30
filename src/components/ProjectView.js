@@ -375,6 +375,7 @@ function ProjectView(props) {
         stepUpdate: 0,
         countCompleted: 0,
         shareToken: "",
+        shareUrl: "",
         copyCount: -1
     }
 
@@ -437,6 +438,10 @@ function ProjectView(props) {
 
             case "isLoaded":
                 draft.project.isLoaded = action.value
+                return
+
+            case "setShareUrl":
+                draft.shareUrl = action.value
                 return
 
             case "editCount":
@@ -700,15 +705,18 @@ function ProjectView(props) {
         }
     }
 
+
     
+    const clipboard = useClipboard()
 
     async function toggleShare() {
-        const clipboard = useClipboard()
+        
         const ourRequest = Axios.CancelToken.source()
         try {
             const setShareToken = await Axios.post(`/projects/${id}/link`, { projectId: id }, { headers: { "freedashToken": appState.user.token } })
             dispatch({ type: "setShareToken", value: setShareToken.data })
             const shareUrl = `https://gracious-ramanujan-5c04ed.netlify.app/share/${id}/${setShareToken.data}`
+            dispatch({ type: "setShareUrl", value: shareUrl })  
             clipboard.copy(shareUrl)
         } catch (e) {
             console.log("There was an error: " + e)
@@ -735,9 +743,9 @@ function ProjectView(props) {
 
     const handleCopy = e => {
         e.preventDefault()
-        window.scrollTo(0, 0)
-        appDispatch({ type: "flashMessage", value: "Link copied to clipboard!" })
         toggleShare()
+        window.scrollTo(0, 0)    
+        appDispatch({ type: "flashMessage", value: "Link copied to clipboard!" })
     }
 
 

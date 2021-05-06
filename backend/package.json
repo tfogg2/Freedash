@@ -21,7 +21,7 @@
     "mongodb": "^3.6.0",
     "mongoose": "^5.9.25",
     "nodemon": "^2.0.4",
-    "sanitize-html": "^1.27.1",
+    "sanitize-html": "^2.3.2",
     "validator": "^13.1.1"
   }
 }
